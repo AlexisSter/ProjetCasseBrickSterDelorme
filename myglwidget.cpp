@@ -23,17 +23,18 @@ MyGLWidget::MyGLWidget(QWidget * parent) : QGLWidget(parent)
     // Reglage de la taille/position
     setFixedSize(WIN_WIDTH, WIN_HEIGHT);
     move(QApplication::desktop()->screen()->rect().center() - rect().center());
-    red = 0.0;
-    green = 0.0;
-    blue = 255.0;
+    initializeGL();
+    // Connexion du timer
+    connect(&m_AnimationTimer,  &QTimer::timeout, [&] {
+        m_TimeElapsed += 1.0f; // 12.0f;
+        updateGL();
+    });
 
-    redBackground = 0.5;
-    blueBackground = 0.5;
-    greenBackground = 0.5;
-
+    m_AnimationTimer.setInterval(10);
+    m_AnimationTimer.start();
     briqueAlive_ = true;
 
-    hide = false;
+
     xBarre_ = 0.5;
     yBarre_ = 0.05;
     longueurBarre_ = 0.1;
@@ -75,7 +76,7 @@ void MyGLWidget::mouseMoveEvent(QMouseEvent *event)
         qDebug() << message;
     }
     event->accept();
-    updateGL();
+
 }
 
 
@@ -147,7 +148,7 @@ int MyGLWidget::gestionBoule(float x_barre, float larg_barre, float larg_balle)
 
   // G�re les rebonds
   if((Xballe+larg_balle/2)>1)  Xdir*=-1;
-  if((Xballe-larg_balle/2)<-1) Xdir*=-1;
+  if((Xballe-larg_balle/2)<0) Xdir*=-1;
   if((Yballe+larg_balle/2)>1)  Ydir*=-1;
   if((Yballe-larg_balle/2)<-1.5) return 0; // La balle est derri�re la barre... fin du jeu
 
@@ -197,7 +198,7 @@ void MyGLWidget::paintGL()
     // Reinitialisation du tampon de couleur
 
     // Reinitialisation de la matrice courante
-    glColor3ub(red, green, blue);  // Couleur à utiliser pour dessiner les objets
+
 
     // Définir la zone à afficher
     glMatrixMode(GL_PROJECTION);
@@ -230,26 +231,21 @@ void MyGLWidget::keyPressEvent(QKeyEvent * event)
     // Changement de couleur du fond
     case Qt::Key_B:
     {
-        redBackground = (float)rand()/RAND_MAX;
-        blueBackground = (float)rand()/RAND_MAX;
-        greenBackground = (float)rand()/RAND_MAX;
-        glClearColor(redBackground, blueBackground, greenBackground, 1.0f);
+
         break;
     }
 
         // Changement de couleur de l'objet
     case Qt::Key_C:
     {
-        red = rand();
-        blue = rand();
-        green = rand();
+
         break;
     }
 
         // Affichage/Masquage de l'objet
     case Qt::Key_H:
     {
-        hide =  !hide;
+
         break;
     }
 
@@ -268,28 +264,28 @@ void MyGLWidget::keyPressEvent(QKeyEvent * event)
     }
     case Qt::Key_Left:
     {
-        glTranslatefL();
+
         break;
     }
     case Qt::Key_Right:
     {
-        glTranslatefR();
+
         break;
     }
     case Qt::Key_Up:
     {
-        glTranslatefH();
+
         break;
     }
     case Qt::Key_Down:
     {
-        glTranslatefB();
+
         break;
     }
 
     case Qt::Key_R:
     {
-        rotate = rotate + 5;
+
         break;
     }
         // Cas par defaut
@@ -306,22 +302,4 @@ void MyGLWidget::keyPressEvent(QKeyEvent * event)
     updateGL();
 }
 
-void MyGLWidget::glTranslatefL()
-{
-    x = x - 0.05;
-}
 
-void MyGLWidget::glTranslatefR()
-{
-    x = x + 0.05;
-}
-
-void MyGLWidget::glTranslatefH()
-{
-    y = y + 0.05;
-}
-
-void MyGLWidget::glTranslatefB()
-{
-    y = y - 0.05;
-}
