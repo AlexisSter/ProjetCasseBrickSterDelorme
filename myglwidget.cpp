@@ -74,10 +74,10 @@ void MyGLWidget::initializeGL()
 }
 
 void MyGLWidget::placerBrique(int n){
-    float xStart = -45 ;
+    float xStart = -41 ;
     float yStart = 21 ;
     float pas = 1;
-    float largeur = 7;
+    float largeur =8;
     float hauteur = 2;
     int t=0;
     for(int i=0; i<n;i++){
