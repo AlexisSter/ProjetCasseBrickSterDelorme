@@ -150,7 +150,7 @@ void MyGLWidget::drawBoule(float x, float y, float radius)
     gluDeleteQuadric(quadrique);
 }
 
-int MyGLWidget::gestionBoule(float x_barre, float larg_barre, float larg_balle)
+int MyGLWidget::gestionBoule(float larg_balle)
 {
         // Position de la balle
        // Direction de la balle
@@ -247,7 +247,7 @@ void MyGLWidget::paintGL()
 
     affiche_barre();
     //drawBoule(0.5, 0.2, 0.03);
-    gestionBoule(0.5, 0.1, 1);
+    gestionBoule(1);
 
 
 }
