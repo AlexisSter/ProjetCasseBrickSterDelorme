@@ -59,6 +59,7 @@ private:
     bool start;
     QTimer m_AnimationTimer;
     float m_TimeElapsed { 0.0f };
+    bool place;
 
 
 };

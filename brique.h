@@ -16,9 +16,9 @@ public:
     float getLongueur(){return longueur_;}
     float getHauteur(){return hauteur_;}
     bool getTouched(){return touched_;}
-    void setTouched(){touched_=true;}
+    void setTouched(bool valeur){ touched_=valeur;}
 
-    float setColor(float red_, float green_, float blue_) {red = red_, green=green_, blue = blue_;}
+    void setColor(float red_, float green_, float blue_) {red = red_, green=green_, blue = blue_;}
 private :
     float x_;
     float y_;

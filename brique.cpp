@@ -19,6 +19,7 @@ void Brique::briqueTouched()
      y_ = 0;
      longueur_ = 0;
      hauteur_ = 0;
+     touched_=true;
 }
 void Brique::Display(const float timeInDays) const
 {

@@ -17,6 +17,7 @@ const float ASPECT_RATIO      = static_cast<float>(WIN_WIDTH) / WIN_HEIGHT;
 const float ORTHO_DIM         = 50.0f;
 
 const float MAX_DIMENSION     = 50.0f;
+int a=0;
 
 
 // Constructeur
@@ -43,6 +44,7 @@ MyGLWidget::MyGLWidget(QWidget * parent) : QGLWidget(parent)
     Xdir = 0.1;
     Ydir = 0.1;
     start = false;
+    place =false;
 
 }
 
@@ -53,7 +55,18 @@ void MyGLWidget::initializeGL()
     // Reglage de la couleur de fond
     glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     glEnable(GL_DEPTH_TEST);
-    placerBrique(50);
+
+    if(!place){
+        a=a+1;
+        if(a%2!=0){
+            placerBrique(50);
+            place=true;
+            qDebug("coucou");
+
+        }
+
+    }
+
 
 
 
@@ -160,6 +173,7 @@ int MyGLWidget::gestionBoule(float larg_balle)
 
   // Avance la balle
     // Gère les rebonds
+
     if((XBoule+larg_balle/2)>50)  Xdir*=-1;
     if((XBoule-larg_balle/2)<-50) Xdir*=-1;
     if((YBoule+larg_balle/2)>25)  Ydir*=-1;
@@ -172,8 +186,9 @@ int MyGLWidget::gestionBoule(float larg_balle)
         if(((XBoule+larg_balle/2)>=(xBarre_-longueurBarre_/2)) && ((XBoule-larg_balle/2)<=(xBarre_+longueurBarre_/2)))
         {
             // Fait le rebond
-            Ydir*=-1;
+
             //Renvoie un angle différent selon la ou on tappe sur la barre
+            Ydir=Ydir * -1;
             if((XBoule-xBarre_ > 1) && (XBoule-xBarre_ <=2)) Xdir=0.1;
             if((XBoule-xBarre_ > 2) && (XBoule-xBarre_ <= 3)) Xdir=0.2;
             if((XBoule-xBarre_ > 3) && (XBoule-xBarre_ <=4)) Xdir=0.3;
@@ -189,62 +204,41 @@ int MyGLWidget::gestionBoule(float larg_balle)
         }
     }
 
-    int i = 0;
-    for(Brique *brique : m_Brique)
-    {
+    int i=0;
+    for(int j=0; j < m_Brique.size() ; j++){
 
-        float xBrique = brique->getX();
-        float yBrique = brique->getX();
-        float hauteurBrique = brique->getHauteur();
-        float longueurBrique = brique->getLongueur();
-        bool touched = brique->getTouched();
+        float xBrique = m_Brique[j]->getX();
+        float yBrique = m_Brique[j]->getY();
+        float hauteurBrique = m_Brique[j]->getHauteur();
+        float longueurBrique = m_Brique[j]->getLongueur();
+        bool touched = m_Brique[j]->getTouched();
         if(!touched)
         {
-            if(((YBoule-larg_balle)<=yBrique+hauteurBrique/2) && ((YBoule+larg_balle)>=yBrique-hauteurBrique/2)) // Si la balle est au niveau de la case
+            if(YBoule+larg_balle >= yBrique-hauteurBrique/2   && YBoule+larg_balle < yBrique-hauteurBrique/8 ) // Si la balle est au niveau de la case
             {
                 // Teste au niveau de l'axe des abscisses
-                if(((XBoule-larg_balle)<=xBrique+longueurBrique/2) && ((XBoule+larg_balle)>=xBrique-longueurBrique/2))
+
+                if(XBoule-larg_balle >= xBrique-longueurBrique/2 && XBoule+larg_balle <= xBrique+longueurBrique && m_Brique[j]->getTouched()==false)
                 {
-                    // Fait le rebond en fonction de l'endroit o� il tape sur la case
-                    //if((YBoule>=(25+yBrique)) || (YBoule<=(25+yBrique))) Ydir*=-1;
-                    //if((XBoule>=(50+xBrique)) || (XBoule<=(50+xBrique))) Xdir*=-1;
-                    Ydir*=-1;
-                    // Efface la case
-                    brique->setTouched();
-                    brique->briqueTouched();
+                    i=i+1;
+                    if(i%2!=0){
+                        m_Brique[j]->setTouched(true);
+                        m_Brique[j]->briqueTouched();
+                        Ydir=Ydir * -1;
+                        }
+
+
+
+
+
                 }
             }
 
+
+
         }
-        i++;
+
     }
-
-
-    //Avance la barre
-
-
-
-    // Teste les contacts entre les cases et la balle
-    /*for(i=0; i<taille_tbl; i++)
-  {
-    if(tbl_case[i].x!=10)
-    {
-      if(((Yballe-larg_balle)<=tbl_case[i].y) && ((Yballe+larg_balle)>=tbl_case[i].y)) // Si la balle est au niveau de la case
-      {
-        // Teste au niveau de l'axe des abscisses
-        if(((Xballe-larg_balle)<=tbl_case[i].x) && ((Xballe+larg_balle)>=tbl_case[i].x))
-        {
-          // Fait le rebond en fonction de l'endroit o� il tape sur la case
-          if((Yballe>=(tbl_case[i].y+0.05)) || (Yballe<=(tbl_case[i].y-0.05))) Ydir*=-1;
-          if((Xballe>=(tbl_case[i].x+0.05)) || (Xballe<=(tbl_case[i].x-0.05))) Xdir*=-1;
-
-          // Efface la case
-          tbl_case[i].x=10;
-        }
-      }
-    }
-  }*/
-
 
 
     XBoule=XBoule+Xdir;
