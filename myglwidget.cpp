@@ -36,7 +36,6 @@ MyGLWidget::MyGLWidget(QWidget * parent) : QGLWidget(parent)
     m_AnimationTimer.start();
     briqueAlive_ = true;
 
-
     xBarre_ = 0.5;
     yBarre_ = 0.05;
     longueurBarre_ = 10;
@@ -217,8 +216,6 @@ void MyGLWidget::resizeGL(int width, int height)
 void MyGLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT);
-
-
     // Reinitialisation du tampon de couleur
 
     // Reinitialisation de la matrice courante
@@ -279,7 +276,6 @@ void MyGLWidget::keyPressEvent(QKeyEvent * event)
         break;
     }
 
-        // Changement de l'objet a afficher
     case Qt::Key_Space:
     {
         //start = !start;
@@ -331,5 +327,3 @@ void MyGLWidget::keyPressEvent(QKeyEvent * event)
     event->accept();
     updateGL();
 }
-
-

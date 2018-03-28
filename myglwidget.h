@@ -39,7 +39,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *event);
     QPoint gestion_barre(float largeur);
     void drawBoule(float x, float y, float radius);
-    int gestionBoule(float x_barre, float larg_barre, float larg_balle);
+    int gestionBoule(float larg_balle);
 
 private:
     // Quelques variables a definir
