@@ -59,7 +59,7 @@ void MyGLWidget::initializeGL()
     if(!place){
         a=a+1;
         if(a%2!=0){
-            placerBrique(50);
+            placerBrique(70);
             place=true;
             qDebug("coucou");
 
@@ -214,11 +214,11 @@ int MyGLWidget::gestionBoule(float larg_balle)
         bool touched = m_Brique[j]->getTouched();
         if(!touched)
         {
-            if(YBoule+larg_balle >= yBrique-hauteurBrique/2   && YBoule+larg_balle < yBrique-hauteurBrique/8 ) // Si la balle est au niveau de la case
+            if((YBoule+larg_balle >= yBrique-hauteurBrique/2   && YBoule+larg_balle < yBrique-hauteurBrique/8 )|| ((YBoule-larg_balle <= yBrique+hauteurBrique/2   && YBoule-larg_balle > yBrique-hauteurBrique/8 )) ) // Si la balle est au niveau de la case
             {
                 // Teste au niveau de l'axe des abscisses
 
-                if(XBoule-larg_balle >= xBrique-longueurBrique/2 && XBoule+larg_balle <= xBrique+longueurBrique && m_Brique[j]->getTouched()==false)
+                if((XBoule-larg_balle >= xBrique-longueurBrique/2 && XBoule+larg_balle <= xBrique+longueurBrique) )
                 {
                     i=i+1;
                     if(i%2!=0){
