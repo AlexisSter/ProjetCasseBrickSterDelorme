@@ -37,8 +37,9 @@ protected:
 
     void affiche_barre();
     void mouseMoveEvent(QMouseEvent *event);
+    void placerBrique(int n);
     QPoint gestion_barre(float largeur);
-    void drawBoule(float x, float y, float radius);
+    void drawBoule(float radius);
     int gestionBoule( float larg_balle);
 
 private:

@@ -28,7 +28,7 @@ MyGLWidget::MyGLWidget(QWidget * parent) : QGLWidget(parent)
     initializeGL();
     // Connexion du timer
     connect(&m_AnimationTimer,  &QTimer::timeout, [&] {
-        m_TimeElapsed += 1.0f; // 12.0f;
+        m_TimeElapsed += 0.01f; // 12.0f;
         updateGL();
     });
 
@@ -54,29 +54,38 @@ void MyGLWidget::initializeGL()
     // Reglage de la couleur de fond
     glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     glEnable(GL_DEPTH_TEST);
-    Brique *brique1 = new Brique(-47, 21, -1, 5,3,1);
-    Brique *brique2 = new Brique(-41, 21, -1, 5,3,1);
-    Brique *brique3 = new Brique(-35, 21, -1, 5,3,1);
-    Brique *brique4 = new Brique(-29, 21, -1, 5,3,1);
-    Brique *brique5 = new Brique(-23, 21, -1, 5,3,1);
-    Brique *brique6 = new Brique(-17, 21, -1, 5,3,1);
-    Brique *brique7 = new Brique(-11, 21, -1, 5,3,1);
-    Brique *brique8 = new Brique(-5, 21, -1, 5,3,1);
-
-    m_Brique.push_back(brique1);
-    m_Brique.push_back(brique2);
-    m_Brique.push_back(brique3);
-    m_Brique.push_back(brique4);
-    m_Brique.push_back(brique5);
-    m_Brique.push_back(brique6);
-    m_Brique.push_back(brique7);
-    m_Brique.push_back(brique8);
+    placerBrique(50);
 
 
 
 
 }
 
+void MyGLWidget::placerBrique(int n){
+    float xStart = -45 ;
+    float yStart = 21 ;
+    float pas = 1;
+    float largeur = 7;
+    float hauteur = 2;
+    int t=0;
+    for(int i=0; i<n;i++){
+        if(xStart+(i-t)*pas+(i-t)*largeur+largeur>50) {
+            t=i;
+
+            yStart = yStart - hauteur -1;
+
+         }
+
+        Brique *briquei = new Brique(xStart+(i-t)*pas+(i-t)*largeur, yStart, -1, largeur,hauteur,1);
+        briquei->setColor((float)rand()/RAND_MAX,(float)rand()/RAND_MAX,(float)rand()/RAND_MAX);
+        m_Brique.push_back(briquei);
+
+
+    }
+
+
+
+}
 
 void MyGLWidget::affiche_barre()
 {
@@ -84,6 +93,7 @@ void MyGLWidget::affiche_barre()
 
     glBegin(GL_QUADS); // Primitive à afficher et début de la déclaration des vertices de cette primitive
     //face avant
+    glColor3f(0.0,0.0,1.0);
     glVertex3f(xBarre_ - longueurBarre_ / 2,-25 + hauteurBarre_,-1);  // Définition des coordonnées des sommets (en 2D, z=0) OK
     glVertex3f(xBarre_ + longueurBarre_/ 2 , -25+hauteurBarre_,-1);
     glVertex3f(xBarre_ + longueurBarre_ / 2, -25,-1);
@@ -141,8 +151,10 @@ void MyGLWidget::mouseMoveEvent(QMouseEvent *event)
 }
 
 
-void MyGLWidget::drawBoule(float x, float y, float radius)
+void MyGLWidget::drawBoule(float radius)
 {
+
+    glColor3f(0.0,1.0,0.0);
     glTranslatef(XBoule,YBoule,0);
     GLUquadric* quadrique=gluNewQuadric();
     gluSphere(quadrique, radius, 100, 100);
@@ -156,7 +168,8 @@ int MyGLWidget::gestionBoule(float larg_balle)
        // Direction de la balle
 
   // Affiche la balle
-  drawBoule(XBoule, YBoule, larg_balle);
+
+  drawBoule(larg_balle);
 
   // Avance la balle
 
@@ -164,7 +177,7 @@ int MyGLWidget::gestionBoule(float larg_balle)
   // G�re les rebonds
   if((XBoule+larg_balle/2)>50)  Xdir*=-1;
   if((XBoule-larg_balle/2)<-50) Xdir*=-1;
-  if((YBoule+larg_balle/2)>25)  Ydir*=-1;
+  if((YBoule+larg_balle/2)>23)  Ydir*=-1;
   if((YBoule-larg_balle/2)<-25) return 0; // La balle est derri�re la barre... fin du jeu
 
   // Teste les contacts entre la balle et la barre
@@ -216,7 +229,7 @@ void MyGLWidget::resizeGL(int width, int height)
 // Fonction d'affichage
 void MyGLWidget::paintGL()
 {
-    glClear(GL_COLOR_BUFFER_BIT);
+
 
 
     // Reinitialisation du tampon de couleur
