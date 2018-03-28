@@ -205,6 +205,7 @@ int MyGLWidget::gestionBoule(float larg_balle)
     }
 
     int i=0;
+    int y=0;
     for(int j=0; j < m_Brique.size() ; j++){
 
         float xBrique = m_Brique[j]->getX();
@@ -214,17 +215,36 @@ int MyGLWidget::gestionBoule(float larg_balle)
         bool touched = m_Brique[j]->getTouched();
         if(!touched)
         {
-            if((YBoule+larg_balle >= yBrique-hauteurBrique/2   && YBoule+larg_balle < yBrique-hauteurBrique/8 )|| ((YBoule-larg_balle <= yBrique+hauteurBrique/2   && YBoule-larg_balle > yBrique-hauteurBrique/8 )) ) // Si la balle est au niveau de la case
+            if((YBoule+larg_balle >= yBrique-hauteurBrique/2  && YBoule+larg_balle <0.1+ yBrique-hauteurBrique/2 )|| ((YBoule-larg_balle <= yBrique+hauteurBrique/2  && YBoule-larg_balle > -0.1+yBrique-hauteurBrique/2 )) ) // Si la balle est au niveau de la case
             {
                 // Teste au niveau de l'axe des abscisses
 
-                if((XBoule-larg_balle >= xBrique-longueurBrique/2 && XBoule+larg_balle <= xBrique+longueurBrique) )
+                if((XBoule+larg_balle >= 0.1+xBrique-longueurBrique/2 && XBoule-larg_balle <=-0.1+ xBrique+longueurBrique/2) )
                 {
                     i=i+1;
                     if(i%2!=0){
                         m_Brique[j]->setTouched(true);
                         m_Brique[j]->briqueTouched();
                         Ydir=Ydir * -1;
+                        }
+
+
+
+
+
+                }
+            }
+            if((XBoule+larg_balle >= xBrique-longueurBrique/2   && XBoule+larg_balle < 0.1+xBrique-longueurBrique/2 )|| ((XBoule-larg_balle <= xBrique+longueurBrique/2   && XBoule-larg_balle > -0.1+xBrique-longueurBrique/2 )) ) // Si la balle est au niveau de la case
+            {
+                // Teste au niveau de l'axe des abscisses
+
+                if((YBoule+larg_balle >= 0.1+yBrique-hauteurBrique/2 && XBoule-larg_balle <=-0.1+ yBrique+hauteurBrique/2) )
+                {
+                    y=y+1;
+                    if(y%2!=0){
+                        m_Brique[j]->setTouched(true);
+                        m_Brique[j]->briqueTouched();
+                        Xdir=Xdir * -1;
                         }
 
 
