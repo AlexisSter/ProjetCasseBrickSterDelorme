@@ -1,6 +1,7 @@
 #ifndef MYGLWIDGET_H
 #define MYGLWIDGET_H
 
+#include "brique.h"
 #include <QGLWidget>
 #include <QKeyEvent>
 #include <QColor>
@@ -8,6 +9,7 @@
 #include <QVector2D>
 #include"GL/gl.h"
 #include <QTimer>
+
 
 // Classe dediee a l'affichage d'une scene OpenGL
 class MyGLWidget : public QGLWidget
@@ -33,7 +35,7 @@ protected:
     // Fonction de gestion d'interactions clavier
     void keyPressEvent(QKeyEvent * event);
 
-    void affiche_barre(float hauteur);
+    void affiche_barre();
     void mouseMoveEvent(QMouseEvent *event);
     QPoint gestion_barre(float largeur);
     void drawBoule(float x, float y, float radius);
@@ -42,15 +44,22 @@ protected:
 private:
     // Quelques variables a definir
     // changer de primitive
+    std::vector<Brique *> m_Brique;
     bool briqueAlive_;
     //coordonnées
+    float XBoule=0;
+    float YBoule=0;
     float xBarre_;
     float yBarre_;
     float longueurBarre_;
+    float hauteurBarre_;
+    float Xdir;
+    float Ydir;
     QPoint oldPosition_;
     bool start;
     QTimer m_AnimationTimer;
     float m_TimeElapsed { 0.0f };
+
 
 };
 

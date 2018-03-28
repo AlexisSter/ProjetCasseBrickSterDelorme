@@ -1,17 +1,23 @@
 #ifndef BRIQUE_H
 #define BRIQUE_H
 #include<QPoint>
-#include "myglwidget.h"
+#include <GL/glu.h>
+#include <QColor>
+#include <QApplication>
+#include <QDesktopWidget>
 class Brique
 {
 public:
-    Brique(float x, float y, float longueur, float hauteur);
+    Brique(float x, float y,float z, float longueur, float hauteur,float profondeur);
+    void Display(const float timeInDays) const;
     void briqueTouched();
 private :
     float x_;
     float y_;
+    float z_;
     float longueur_;
     float hauteur_;
+    float profondeur_;
 
 protected :
     ~Brique();
