@@ -56,7 +56,6 @@ private:
     float hauteurBarre_;
     float Xdir;
     float Ydir;
-    QPoint oldPosition_;
     bool start;
     QTimer m_AnimationTimer;
     float m_TimeElapsed { 0.0f };

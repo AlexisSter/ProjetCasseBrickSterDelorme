@@ -133,17 +133,7 @@ void MyGLWidget::mouseMoveEvent(QMouseEvent *event)
     start  = true;
     if(start)
     {
-
-
-
         xBarre_ =-50+ positionSouris.x() /13;
-        qDebug() << message;
-
-
-    }
-    else
-    {
-        qDebug() << message;
     }
     event->accept();
 
@@ -163,30 +153,27 @@ void MyGLWidget::drawBoule(float radius)
 
 int MyGLWidget::gestionBoule(float larg_balle)
 {
-        // Position de la balle
-       // Direction de la balle
 
   // Affiche la balle
 
   drawBoule(larg_balle);
 
   // Avance la balle
+    // Gère les rebonds
+    if((XBoule+larg_balle/2)>50)  Xdir*=-1;
+    if((XBoule-larg_balle/2)<-50) Xdir*=-1;
+    if((YBoule+larg_balle/2)>25)  Ydir*=-1;
+    if((YBoule-larg_balle/2)<-25) return 0; // La balle est derri�re la barre... fin du jeu
 
-
-  // G�re les rebonds
-  if((XBoule+larg_balle/2)>50)  Xdir*=-1;
-  if((XBoule-larg_balle/2)<-50) Xdir*=-1;
-  if((YBoule+larg_balle/2)>23)  Ydir*=-1;
-  if((YBoule-larg_balle/2)<-25) return 0; // La balle est derri�re la barre... fin du jeu
-
-  // Teste les contacts entre la balle et la barre
-  if((YBoule-larg_balle/2<=-25+hauteurBarre_)) // Si la balle est au niveau de la barre
-  {
-    // Teste au niveau de l'axe des abscisses
-    if(((XBoule+larg_balle/2)>=(xBarre_-longueurBarre_/2)) && ((XBoule-larg_balle/2)<=(xBarre_+longueurBarre_/2)))
+    // Teste les collisions entre la boule et la barre
+    if((YBoule-larg_balle/2<=-25+hauteurBarre_)) // Si la balle est au niveau de la barre
     {
-      // Fait le rebond
-      Ydir*=-1;
+        // Teste au niveau de l'axe des abscisses
+        if(((XBoule+larg_balle/2)>=(xBarre_-longueurBarre_/2)) && ((XBoule-larg_balle/2)<=(xBarre_+longueurBarre_/2)))
+        {
+            // Fait le rebond
+            Ydir*=-1;
+            //Renvoie un angle différent selon la ou on tappe sur la barre
             if((XBoule-xBarre_ > 1) && (XBoule-xBarre_ <=2)) Xdir=0.1;
             if((XBoule-xBarre_ > 2) && (XBoule-xBarre_ <= 3)) Xdir=0.2;
             if((XBoule-xBarre_ > 3) && (XBoule-xBarre_ <=4)) Xdir=0.3;
@@ -199,12 +186,71 @@ int MyGLWidget::gestionBoule(float larg_balle)
             if((XBoule-xBarre_ < -4) && (XBoule-xBarre_ <= -5)) Xdir=-0.4;
             if((XBoule-xBarre_ < -5) && (XBoule-xBarre_ <= -6)) Xdir=-0.5;
 
+        }
     }
-  }
-  XBoule=XBoule+Xdir;
-  YBoule=YBoule+Ydir;
 
-  return 1; // Fin de la fonction, tous s'est bine pass� !
+    int i = 0;
+    for(Brique *brique : m_Brique)
+    {
+
+        float xBrique = brique->getX();
+        float yBrique = brique->getX();
+        float hauteurBrique = brique->getHauteur();
+        float longueurBrique = brique->getLongueur();
+        bool touched = brique->getTouched();
+        if(!touched)
+        {
+            if(((YBoule-larg_balle)<=yBrique+hauteurBrique/2) && ((YBoule+larg_balle)>=yBrique-hauteurBrique/2)) // Si la balle est au niveau de la case
+            {
+                // Teste au niveau de l'axe des abscisses
+                if(((XBoule-larg_balle)<=xBrique+longueurBrique/2) && ((XBoule+larg_balle)>=xBrique-longueurBrique/2))
+                {
+                    // Fait le rebond en fonction de l'endroit o� il tape sur la case
+                    //if((YBoule>=(25+yBrique)) || (YBoule<=(25+yBrique))) Ydir*=-1;
+                    //if((XBoule>=(50+xBrique)) || (XBoule<=(50+xBrique))) Xdir*=-1;
+                    Ydir*=-1;
+                    // Efface la case
+                    brique->setTouched();
+                    brique->briqueTouched();
+                }
+            }
+
+        }
+        i++;
+    }
+
+
+    //Avance la barre
+
+
+
+    // Teste les contacts entre les cases et la balle
+    /*for(i=0; i<taille_tbl; i++)
+  {
+    if(tbl_case[i].x!=10)
+    {
+      if(((Yballe-larg_balle)<=tbl_case[i].y) && ((Yballe+larg_balle)>=tbl_case[i].y)) // Si la balle est au niveau de la case
+      {
+        // Teste au niveau de l'axe des abscisses
+        if(((Xballe-larg_balle)<=tbl_case[i].x) && ((Xballe+larg_balle)>=tbl_case[i].x))
+        {
+          // Fait le rebond en fonction de l'endroit o� il tape sur la case
+          if((Yballe>=(tbl_case[i].y+0.05)) || (Yballe<=(tbl_case[i].y-0.05))) Ydir*=-1;
+          if((Xballe>=(tbl_case[i].x+0.05)) || (Xballe<=(tbl_case[i].x-0.05))) Xdir*=-1;
+
+          // Efface la case
+          tbl_case[i].x=10;
+        }
+      }
+    }
+  }*/
+
+
+
+    XBoule=XBoule+Xdir;
+    YBoule=YBoule+Ydir;
+
+    return 1; // Fin de la fonction, tous s'est bine pass� !
 }
 
 
@@ -241,10 +287,10 @@ void MyGLWidget::paintGL()
 
     // Definition de la position de la camera
     glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glOrtho(-MAX_DIMENSION, MAX_DIMENSION, -MAX_DIMENSION * WIN_HEIGHT / static_cast<float>(WIN_WIDTH), MAX_DIMENSION * WIN_HEIGHT / static_cast<float>(WIN_WIDTH), -MAX_DIMENSION * 2.0f, MAX_DIMENSION * 2.0f);
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
+    glLoadIdentity();
+    glOrtho(-MAX_DIMENSION, MAX_DIMENSION, -MAX_DIMENSION * WIN_HEIGHT / static_cast<float>(WIN_WIDTH), MAX_DIMENSION * WIN_HEIGHT / static_cast<float>(WIN_WIDTH), -MAX_DIMENSION * 2.0f, MAX_DIMENSION * 2.0f);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();

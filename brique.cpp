@@ -9,7 +9,7 @@ Brique::Brique(float x, float y,float z, float longueur, float hauteur,float pro
     longueur_ = longueur;
     hauteur_ = hauteur;
     profondeur_=profondeur;
-
+    touched_ = false;
 }
 
 

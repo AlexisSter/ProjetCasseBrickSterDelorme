@@ -11,12 +11,14 @@ public:
     Brique(float x, float y,float z, float longueur, float hauteur,float profondeur);
     void Display(const float timeInDays) const;
     void briqueTouched();
-    getX(){return x_;}
-    getY(){return y_;}
-    getLongueur(){return longueur_;}
-    getHauteur(){return hauteur_;}
-    float setColor(float red_, float green_, float blue_) {red = red_, green=green_, blue = blue_;}
+    float getX(){return x_;}
+    float getY(){return y_;}
+    float getLongueur(){return longueur_;}
+    float getHauteur(){return hauteur_;}
+    bool getTouched(){return touched_;}
+    void setTouched(){touched_=true;}
 
+    float setColor(float red_, float green_, float blue_) {red = red_, green=green_, blue = blue_;}
 private :
     float x_;
     float y_;
@@ -27,6 +29,8 @@ private :
     float red;
     float green;
     float blue;
+    bool touched_;
+
 
 protected :
     ~Brique();
