@@ -9,6 +9,9 @@
 #include<QMouseEvent>
 #include "brique.h"
 #include <GL/glu.h>
+#include<QDir>
+#include<QInputDialog>
+#include<QLineEdit>
 
 // Declarations des constantes
 const unsigned int WIN_WIDTH  = 1300;
@@ -74,10 +77,10 @@ void MyGLWidget::initializeGL()
     if(!place){
         a=a+1;
         if(a==1){
-            QImage qim_Texture1 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/texture10.png"));
-            QImage qim_Texture2 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/texture6.jpg"));
-            QImage qim_Texture3 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/texture11.png"));
-            QImage qim_Texture4 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/texture12.png"));
+            QImage qim_Texture1 = QGLWidget::convertToGLFormat(QImage("C:/Users/Tanguy/Documents/Cours/Fise2/Bibliotheque_multimedia/ProjetCasseBrique/ProjetCasseBrickSterDelorme/texture10.png"));
+            QImage qim_Texture2 = QGLWidget::convertToGLFormat(QImage("C:/Users/Tanguy/Documents/Cours/Fise2/Bibliotheque_multimedia/ProjetCasseBrique/ProjetCasseBrickSterDelorme/texture6.jpg"));
+            QImage qim_Texture3 = QGLWidget::convertToGLFormat(QImage("C:/Users/Tanguy/Documents/Cours/Fise2/Bibliotheque_multimedia/ProjetCasseBrique/ProjetCasseBrickSterDelorme/texture11.png"));
+            QImage qim_Texture4 = QGLWidget::convertToGLFormat(QImage("C:/Users/Tanguy/Documents/Cours/Fise2/Bibliotheque_multimedia/ProjetCasseBrique/ProjetCasseBrickSterDelorme/texture12.png"));
             GLuint* m_TextureID = new GLuint[4];
             glGenTextures( 4, m_TextureID );
             m_texture=m_TextureID[0];
@@ -319,6 +322,8 @@ void MyGLWidget::etatPartie()
     {
             m_TexteAAfficher ="T'as perdu sale grosse merde";
             renderText(50, 500, m_TexteAAfficher);
+            joueur_.enregistrer();
+
             //QString("Objet selectionne : %1").arg(QString::fromStdString(planet->GetName()));
     }
 }
@@ -374,6 +379,15 @@ void MyGLWidget::paintGL()
     QString score = joueur_.displayScore();
     renderText(30,30, score);
     gestionBoule(0.5);
+    if(nbBoules_ ==0)
+    {
+        bool ok;
+         QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
+                                              tr("User name:"), QLineEdit::Normal,
+                                              QDir::home().dirName(), &ok);
+         if (ok && !text.isEmpty())
+            qDebug()<< text;
+    }
 }
 
 

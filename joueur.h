@@ -2,11 +2,16 @@
 #define JOUEUR_H
 #include <QString>
 #include <fstream>
+#include <QList>
+
+
 class Joueur
 {
 public:
     int score_;
     QString m_ScoreAAfficher = "";
+    QList<int> listeScores;
+    QList<QString> listeNoms;
 
     Joueur();
     void score();
@@ -14,8 +19,6 @@ public:
     void charger();
     void enregistrer();
 private :
-    std::vector<Brique *> nomJoueurs;
-    std::vector<Brique *> scoreJoueurs;
 
 };
 

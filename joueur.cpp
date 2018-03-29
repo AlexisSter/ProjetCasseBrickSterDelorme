@@ -1,6 +1,10 @@
 #include "joueur.h"
 #include "myglwidget.h"
 #include <fstream>
+#include<QDir>
+#include<QInputDialog>
+#include<qDebug>
+#include<QLineEdit>
 using namespace std;
 
 Joueur::Joueur()
@@ -19,42 +23,17 @@ QString Joueur::displayScore()
     return m_ScoreAAfficher;
 }
 
-
-void Joueur::charger(ifstream &is)
+void Joueur::setNomJoueur(QString text)
 {
-    int n;
-    clear();
-    is>>n;
-    is.ignore();
-    for (int i=0;i<n;i++)
-    {
-        Alarme a;
-        a.charger(is);
-        push_back(a);
-
-    }
-
-}
-
-void Joueur::sauver(ofstream &os)
-{
-    os<<size()<<endl;
-    for (iterator it=begin();it!=end();it++) it->sauver(os);
-
-}
-
-void Joueur::charger()
-{
-    ifstream os;
-    os.open("Alarmes.txt");
-    liste->charger(os);
-    os.close();
+     listeNoms.push_back(text);
+     qDebug() << listeNoms[0];
 }
 
 void Joueur::enregistrer()
 {
     ofstream os;
-    os.open("Alarmes.txt");
-    liste->sauver(os);
+    os.open("Score.txt");
+    os << "Bonjour";
     os.close();
+
 }
