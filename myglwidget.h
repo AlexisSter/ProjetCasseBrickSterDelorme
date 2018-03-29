@@ -47,6 +47,7 @@ protected:
     setBarre(float x, float y, float longueur, float hauteur){xBarre_ = x, yBarre_ = y, longueurBarre_ = longueur, hauteurBarre_ = hauteur;}
     void etatPartie(); //vérifie le nombre de boules
     void playNextBoule(); // réinitialise la plateau pour la boule suivante
+    void afficheFond();
 
 private:
     // Quelques variables a definir
@@ -71,6 +72,8 @@ private:
     bool place;
     GLuint m_texture;
     QImage image;
+    GLuint m_textureFond;
+    QImage imageFond;
     bool pause;
     int nbBoules_;
     int score_;

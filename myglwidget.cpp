@@ -74,11 +74,14 @@ void MyGLWidget::initializeGL()
     if(!place){
         a=a+1;
         if(a==1){
-            QImage qim_Texture1 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/texture3.jpg"));
-            GLuint* m_TextureID = new GLuint[1];
-            glGenTextures( 1, m_TextureID );
+            QImage qim_Texture1 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/texture10.png"));
+            QImage qim_Texture2 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/texture6.jpg"));
+            GLuint* m_TextureID = new GLuint[2];
+            glGenTextures( 2, m_TextureID );
             m_texture=m_TextureID[0];
             image=qim_Texture1;
+            m_textureFond=m_TextureID[1];
+            imageFond=qim_Texture2;
             placerBrique(100);
             place=true;
             qDebug("coucou");
@@ -93,7 +96,7 @@ void MyGLWidget::placerBrique(int n){
     float yStart = 21 ;
     float pas = 0;
     float largeur =9;
-    float hauteur = 1;
+    float hauteur = 1.4;
     int t=0;
     for(int i=0; i<n;i++){
         if(xStart+(i-t)*pas+(i-t)*largeur+largeur>50) {
@@ -108,7 +111,24 @@ void MyGLWidget::placerBrique(int n){
         m_Brique.push_back(briquei);
     }
 }
+void MyGLWidget::afficheFond(){
+    glBindTexture( GL_TEXTURE_2D, m_textureFond);
+    glTexImage2D( GL_TEXTURE_2D, 0, 4, imageFond.width(), imageFond.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, imageFond.bits() );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBegin(GL_QUADS); // Primitive à afficher et début de la déclaration des vertices de cette primitive
+    //face avant
 
+    glTexCoord2f(0, 0);glVertex3f(-50,-25,-5);  // Définition des coordonnées des sommets (en 2D, z=0) OK
+    glTexCoord2f(1, 0);glVertex3f(50,-25,-5);
+    glTexCoord2f(1, 1);glVertex3f(50,25,-5);
+    glTexCoord2f(0, 1);glVertex3f(-50,25,-5);
+
+    glEnd();
+
+
+
+}
 void MyGLWidget::affiche_barre()
 {
     glBegin(GL_QUADS); // Primitive à afficher et début de la déclaration des vertices de cette primitive
@@ -148,11 +168,12 @@ void MyGLWidget::affiche_barre()
 }
 void MyGLWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    this->setMouseTracking(true);
-    QPoint positionSouris = event->pos();
-    QString message = "x : " + QString::number(positionSouris.x()) + " - y : " + QString::number(positionSouris.y())+ " - xbarre : " + QString::number(xBarre_);
+
     if(start)
     {
+        this->setMouseTracking(true);
+        QPoint positionSouris = event->pos();
+        QString message = "x : " + QString::number(positionSouris.x()) + " - y : " + QString::number(positionSouris.y())+ " - xbarre : " + QString::number(xBarre_);
         xBarre_ =-50+ positionSouris.x() /13;
     }
     event->accept();
@@ -272,7 +293,12 @@ void MyGLWidget::etatPartie()
     nbBoules_ = nbBoules_ - 1;
     if(nbBoules_>0)
     {
+        start = false;
         playNextBoule();
+
+        updateGL();
+
+
     }
     else
     {
@@ -288,10 +314,7 @@ void MyGLWidget::playNextBoule()
     setBoule(0,-21.0);
     Xdir = 0.0;
     Ydir = 0.1;
-    drawBoule(1);
-    affiche_barre();
-    updateGL();
-    start = false;
+
 }
 
 // Fonction de redimensionnement
@@ -330,6 +353,7 @@ void MyGLWidget::paintGL()
     for ( int i = 0; i<m_Brique.size();i++){
         m_Brique[i]->Display(m_TimeElapsed);
     }
+    afficheFond();
     affiche_barre();
     QString score = joueur_.displayScore();
     renderText(30,30, score);
