@@ -90,7 +90,6 @@ void MyGLWidget::initializeGL()
             imageBarre=qim_Texture4;
             placerBrique(100);
             place=true;
-            qDebug("coucou");
         }
     }
 }
