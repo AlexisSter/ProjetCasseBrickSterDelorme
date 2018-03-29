@@ -8,7 +8,7 @@
 class Brique
 {
 public:
-    Brique(float x, float y,float z, float longueur, float hauteur,float profondeur);
+    Brique(float x, float y,float z, float longueur, float hauteur,float profondeur,GLuint text,QImage texture);
     void Display(const float timeInDays) const;
     void briqueTouched();
     float getX(){return x_;}
@@ -30,6 +30,8 @@ private :
     float green;
     float blue;
     bool touched_;
+    GLuint texture_id;
+    QImage texture_image;
 
 
 protected :

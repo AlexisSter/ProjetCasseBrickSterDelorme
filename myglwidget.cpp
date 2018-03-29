@@ -45,6 +45,8 @@ MyGLWidget::MyGLWidget(QWidget * parent) : QGLWidget(parent)
     Ydir = 0.1;
     start = false;
     place =false;
+    occupied1 = false;
+    occupied2 = false;
 
 }
 
@@ -53,13 +55,20 @@ MyGLWidget::MyGLWidget(QWidget * parent) : QGLWidget(parent)
 void MyGLWidget::initializeGL()
 {
     // Reglage de la couleur de fond
+    glEnable(GL_TEXTURE_2D);
     glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     glEnable(GL_DEPTH_TEST);
 
+
     if(!place){
         a=a+1;
-        if(a%2!=0){
-            placerBrique(70);
+        if(a==1){
+            QImage qim_Texture1 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/texture3.jpg"));
+            GLuint* m_TextureID = new GLuint[1];
+            glGenTextures( 1, m_TextureID );
+            m_texture=m_TextureID[0];
+            image=qim_Texture1;
+            placerBrique(100);
             place=true;
             qDebug("coucou");
 
@@ -74,21 +83,23 @@ void MyGLWidget::initializeGL()
 }
 
 void MyGLWidget::placerBrique(int n){
+
+
     float xStart = -41 ;
     float yStart = 21 ;
-    float pas = 1;
-    float largeur =8;
-    float hauteur = 2;
+    float pas = 0;
+    float largeur =9;
+    float hauteur = 1;
     int t=0;
     for(int i=0; i<n;i++){
         if(xStart+(i-t)*pas+(i-t)*largeur+largeur>50) {
             t=i;
 
-            yStart = yStart - hauteur -1;
+            yStart = yStart - hauteur;
 
          }
 
-        Brique *briquei = new Brique(xStart+(i-t)*pas+(i-t)*largeur, yStart, -1, largeur,hauteur,1);
+        Brique *briquei = new Brique(xStart+(i-t)*pas+(i-t)*largeur, yStart, -1, largeur,hauteur,1,m_texture,image);
         briquei->setColor((float)rand()/RAND_MAX,(float)rand()/RAND_MAX,(float)rand()/RAND_MAX);
         m_Brique.push_back(briquei);
 
@@ -143,7 +154,7 @@ void MyGLWidget::mouseMoveEvent(QMouseEvent *event)
     this->setMouseTracking(true);
     QPoint positionSouris = event->pos();
     QString message = "x : " + QString::number(positionSouris.x()) + " - y : " + QString::number(positionSouris.y())+ " - xbarre : " + QString::number(xBarre_);
-    start  = true;
+    start=true;
     if(start)
     {
         xBarre_ =-50+ positionSouris.x() /13;
@@ -176,7 +187,7 @@ int MyGLWidget::gestionBoule(float larg_balle)
 
     if((XBoule+larg_balle/2)>50)  Xdir*=-1;
     if((XBoule-larg_balle/2)<-50) Xdir*=-1;
-    if((YBoule+larg_balle/2)>25)  Ydir*=-1;
+    if((YBoule+larg_balle/2)>23)  Ydir*=-1;
     if((YBoule-larg_balle/2)<-25) return 0; // La balle est derri�re la barre... fin du jeu
 
     // Teste les collisions entre la boule et la barre
@@ -206,8 +217,10 @@ int MyGLWidget::gestionBoule(float larg_balle)
 
     int i=0;
     int y=0;
+    int coin=0;
     for(int j=0; j < m_Brique.size() ; j++){
-
+        occupied1 = false;
+        occupied2 = false;
         float xBrique = m_Brique[j]->getX();
         float yBrique = m_Brique[j]->getY();
         float hauteurBrique = m_Brique[j]->getHauteur();
@@ -215,7 +228,7 @@ int MyGLWidget::gestionBoule(float larg_balle)
         bool touched = m_Brique[j]->getTouched();
         if(!touched)
         {
-            if((YBoule+larg_balle >= yBrique-hauteurBrique/2  && YBoule+larg_balle <0.1+ yBrique-hauteurBrique/2 )|| ((YBoule-larg_balle <= yBrique+hauteurBrique/2  && YBoule-larg_balle > -0.1+yBrique-hauteurBrique/2 )) ) // Si la balle est au niveau de la case
+            if((YBoule+larg_balle >= yBrique-hauteurBrique/2  && YBoule+larg_balle <0.1+ yBrique-hauteurBrique/2 )|| ((YBoule-larg_balle <= yBrique+hauteurBrique/2  && YBoule-larg_balle > -0.1+yBrique-hauteurBrique/2 )) && !occupied1 ) // Si la balle est au niveau de la case
             {
                 // Teste au niveau de l'axe des abscisses
 
@@ -226,7 +239,11 @@ int MyGLWidget::gestionBoule(float larg_balle)
                         m_Brique[j]->setTouched(true);
                         m_Brique[j]->briqueTouched();
                         Ydir=Ydir * -1;
+                        //occupied2=true;
+                        coin=coin+1;
                         }
+
+
 
 
 
@@ -234,17 +251,19 @@ int MyGLWidget::gestionBoule(float larg_balle)
 
                 }
             }
-            if((XBoule+larg_balle >= xBrique-longueurBrique/2   && XBoule+larg_balle < 0.1+xBrique-longueurBrique/2 )|| ((XBoule-larg_balle <= xBrique+longueurBrique/2   && XBoule-larg_balle > -0.1+xBrique-longueurBrique/2 )) ) // Si la balle est au niveau de la case
+            if((XBoule+larg_balle >= xBrique-longueurBrique/2   && XBoule+larg_balle < 0.1+xBrique-longueurBrique/2 )|| ((XBoule-larg_balle <= xBrique+longueurBrique/2   && XBoule-larg_balle > -0.1+xBrique-longueurBrique/2 )) && !occupied2 ) // Si la balle est au niveau de la case
             {
                 // Teste au niveau de l'axe des abscisses
 
-                if((YBoule+larg_balle >= 0.1+yBrique-hauteurBrique/2 && XBoule-larg_balle <=-0.1+ yBrique+hauteurBrique/2) )
+                if((YBoule+larg_balle >= 0.1+yBrique-hauteurBrique/2 && YBoule-larg_balle <=-0.1+ yBrique+hauteurBrique/2) )
                 {
                     y=y+1;
                     if(y%2!=0){
                         m_Brique[j]->setTouched(true);
                         m_Brique[j]->briqueTouched();
                         Xdir=Xdir * -1;
+                        //occupied1=true;
+                        coin=coin+1;
                         }
 
 
@@ -319,7 +338,7 @@ void MyGLWidget::paintGL()
 
     affiche_barre();
     //drawBoule(0.5, 0.2, 0.03);
-    gestionBoule(1);
+    gestionBoule(0.5);
 
 
 }

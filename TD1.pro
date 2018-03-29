@@ -22,3 +22,5 @@ SOURCES	+= main.cpp myglwidget.cpp \
     brique.cpp
 HEADERS += myglwidget.h \
     brique.h
+
+RESOURCES +=

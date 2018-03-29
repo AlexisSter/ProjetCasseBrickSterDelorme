@@ -57,9 +57,13 @@ private:
     float Xdir;
     float Ydir;
     bool start;
+    bool occupied1;
+    bool occupied2;
     QTimer m_AnimationTimer;
     float m_TimeElapsed { 0.0f };
     bool place;
+    GLuint m_texture;
+    QImage image;
 
 
 };
