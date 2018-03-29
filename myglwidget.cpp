@@ -326,8 +326,8 @@ void MyGLWidget::etatPartie()
 
 void MyGLWidget::playNextBoule()
 {
-    setBarre(0.5,0.05,10,3);
-    setBoule(0,-21.0);
+    setBarre(0.5,0.05,10,1);
+    setBoule(0,-20.5);
     Xdir = 0.0;
     Ydir = 0.1;
 
@@ -369,6 +369,7 @@ void MyGLWidget::paintGL()
     for ( int i = 0; i<m_Brique.size();i++){
         m_Brique[i]->Display(m_TimeElapsed);
     }
+    glColor3f(1,1,1);
     afficheFond();
     affiche_barre();
     QString score = joueur_.displayScore();
