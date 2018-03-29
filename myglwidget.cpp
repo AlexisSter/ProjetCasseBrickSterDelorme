@@ -49,7 +49,7 @@ MyGLWidget::MyGLWidget(QWidget * parent) : QGLWidget(parent)
     xBarre_ = 0.5;
     yBarre_ = 0.05;
     longueurBarre_ = 10;
-    hauteurBarre_ = 3;
+    hauteurBarre_ = 1;
     Xdir = 0.0;
     Ydir = 0.1;
     place =false;
@@ -57,7 +57,7 @@ MyGLWidget::MyGLWidget(QWidget * parent) : QGLWidget(parent)
     occupied2 = false;
 
     XBoule = 0;
-    YBoule = -21.0;
+    YBoule = -20.5;
     nbBoules_ = 3;
 }
 
@@ -76,12 +76,18 @@ void MyGLWidget::initializeGL()
         if(a==1){
             QImage qim_Texture1 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/texture10.png"));
             QImage qim_Texture2 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/texture6.jpg"));
-            GLuint* m_TextureID = new GLuint[2];
-            glGenTextures( 2, m_TextureID );
+            QImage qim_Texture3 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/texture11.png"));
+            QImage qim_Texture4 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/texture12.png"));
+            GLuint* m_TextureID = new GLuint[4];
+            glGenTextures( 4, m_TextureID );
             m_texture=m_TextureID[0];
             image=qim_Texture1;
             m_textureFond=m_TextureID[1];
             imageFond=qim_Texture2;
+            m_textureBoule=m_TextureID[2];
+            imageBoule=qim_Texture3;
+            m_textureBarre=m_TextureID[3];
+            imageBarre=qim_Texture4;
             placerBrique(100);
             place=true;
             qDebug("coucou");
@@ -131,38 +137,43 @@ void MyGLWidget::afficheFond(){
 }
 void MyGLWidget::affiche_barre()
 {
+
+    glBindTexture( GL_TEXTURE_2D, m_textureBarre);
+    glTexImage2D( GL_TEXTURE_2D, 0, 4, imageBarre.width(), imageBarre.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, imageBarre.bits() );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBegin(GL_QUADS); // Primitive à afficher et début de la déclaration des vertices de cette primitive
     //face avant
-    glColor3f(0.0,0.0,1.0);
-    glVertex3f(xBarre_ - longueurBarre_ / 2,-25 + hauteurBarre_,-1);  // Définition des coordonnées des sommets (en 2D, z=0) OK
-    glVertex3f(xBarre_ + longueurBarre_/ 2 , -25+hauteurBarre_,-1);
-    glVertex3f(xBarre_ + longueurBarre_ / 2, -25,-1);
-    glVertex3f(xBarre_ - longueurBarre_ / 2, -25, -1);
+
+    glTexCoord2f(0, 1);glVertex3f(xBarre_ - longueurBarre_ / 2,-22 + hauteurBarre_,-1);  // Définition des coordonnées des sommets (en 2D, z=0) OK
+    glTexCoord2f(1, 1);glVertex3f(xBarre_ + longueurBarre_/ 2 , -22+hauteurBarre_,-1);
+    glTexCoord2f(1, 0);glVertex3f(xBarre_ + longueurBarre_ / 2, -22,-1);
+    glTexCoord2f(0, 0);glVertex3f(xBarre_ - longueurBarre_ / 2, -22, -1);
     //face arrière
-    glVertex3f(xBarre_ - longueurBarre_ / 2, -25,-3);  // Définition des coordonnées des sommets (en 2D, z=0) OK
-    glVertex3f(xBarre_ + longueurBarre_ / 2 , -25,-3);
-    glVertex3f(xBarre_ + longueurBarre_ / 2, -25+ hauteurBarre_,-3);
-    glVertex3f(xBarre_ - longueurBarre_ / 2, -25+ hauteurBarre_,-3);
+    glVertex3f(xBarre_ - longueurBarre_ / 2, -22,-3);  // Définition des coordonnées des sommets (en 2D, z=0) OK
+    glVertex3f(xBarre_ + longueurBarre_ / 2 , -22,-3);
+    glVertex3f(xBarre_ + longueurBarre_ / 2, -22+ hauteurBarre_,-3);
+    glVertex3f(xBarre_ - longueurBarre_ / 2, -22+ hauteurBarre_,-3);
     //face dessous
-    glVertex3f(xBarre_ - longueurBarre_ / 2, -25,-1);  // Définition des coordonnées des sommets (en 2D, z=0)OK
-    glVertex3f(xBarre_ - longueurBarre_ / 2 , -25,-3);
-    glVertex3f(xBarre_ + longueurBarre_ / 2, -25,-1);
-    glVertex3f(xBarre_ + longueurBarre_ / 2, -25,-3);
+    glVertex3f(xBarre_ - longueurBarre_ / 2, -22,-1);  // Définition des coordonnées des sommets (en 2D, z=0)OK
+    glVertex3f(xBarre_ - longueurBarre_ / 2 , -22,-3);
+    glVertex3f(xBarre_ + longueurBarre_ / 2, -22,-1);
+    glVertex3f(xBarre_ + longueurBarre_ / 2, -22,-3);
     //face dessus
-    glVertex3f(xBarre_ - longueurBarre_ / 2, -25 + hauteurBarre_,-1);  // Définition des coordonnées des sommets (en 2D, z=0)OK
-    glVertex3f(xBarre_ - longueurBarre_ / 2 , -25 + hauteurBarre_ ,-3);
-    glVertex3f(xBarre_ + longueurBarre_ / 2, -25 + hauteurBarre_,-1);
-    glVertex3f(xBarre_ + longueurBarre_ / 2, -25 + hauteurBarre_,- 3);
+    glVertex3f(xBarre_ - longueurBarre_ / 2, -22 + hauteurBarre_,-1);  // Définition des coordonnées des sommets (en 2D, z=0)OK
+    glVertex3f(xBarre_ - longueurBarre_ / 2 , -22 + hauteurBarre_ ,-3);
+    glVertex3f(xBarre_ + longueurBarre_ / 2, -22 + hauteurBarre_,-1);
+    glVertex3f(xBarre_ + longueurBarre_ / 2, -22 + hauteurBarre_,- 3);
     //face droite
-    glVertex3f(xBarre_ + longueurBarre_ / 2, -25 + hauteurBarre_ ,-1);  // Définition des coordonnées des sommets (en 2D, z=0)
-    glVertex3f(xBarre_ + longueurBarre_ / 2 , -25 + hauteurBarre_,-3);
-    glVertex3f(xBarre_ + longueurBarre_ / 2,  - 25,-1);
-    glVertex3f(xBarre_ + longueurBarre_ / 2, -25,-3);
+    glVertex3f(xBarre_ + longueurBarre_ / 2, -22 + hauteurBarre_ ,-1);  // Définition des coordonnées des sommets (en 2D, z=0)
+    glVertex3f(xBarre_ + longueurBarre_ / 2 , -22 + hauteurBarre_,-3);
+    glVertex3f(xBarre_ + longueurBarre_ / 2,  - 22,-1);
+    glVertex3f(xBarre_ + longueurBarre_ / 2, -22,-3);
     //face gauche
-    glVertex3f(xBarre_ - longueurBarre_ / 2, -25+ hauteurBarre_ ,-1);  // Définition des coordonnées des sommets (en 2D, z=0)
-    glVertex3f(xBarre_ - longueurBarre_ / 2 ,-25 + hauteurBarre_ ,-3);
-    glVertex3f(xBarre_ - longueurBarre_ / 2, -25,-1);
-    glVertex3f(xBarre_ - longueurBarre_ / 2, -25,-3);
+    glVertex3f(xBarre_ - longueurBarre_ / 2, -22+ hauteurBarre_ ,-1);  // Définition des coordonnées des sommets (en 2D, z=0)
+    glVertex3f(xBarre_ - longueurBarre_ / 2 ,-22 + hauteurBarre_ ,-3);
+    glVertex3f(xBarre_ - longueurBarre_ / 2, -22,-1);
+    glVertex3f(xBarre_ - longueurBarre_ / 2, -22,-3);
     glEnd();
 
 }
@@ -183,10 +194,15 @@ void MyGLWidget::mouseMoveEvent(QMouseEvent *event)
 
 void MyGLWidget::drawBoule(float radius)
 {
+    glBindTexture(GL_TEXTURE_2D,m_textureBoule);
+    //Transmet à OpenGL toutes les caractéristiques de la texture courante : largeur, hauteur, format, etc... et bien sûr l'image
+    glTexImage2D( GL_TEXTURE_2D, 0, 4, imageBoule.width(),imageBoule.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, imageBoule.bits() );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glColor3f(0.0,1.0,0.0);
     glTranslatef(XBoule,YBoule,0);
     GLUquadric* quadrique=gluNewQuadric();
+    gluQuadricTexture(quadrique,GL_TRUE);
     gluSphere(quadrique, radius, 100, 100);
     gluDeleteQuadric(quadrique);
 }
@@ -203,14 +219,14 @@ int MyGLWidget::gestionBoule(float larg_balle)
 
     if((XBoule+larg_balle/2)>50)  Xdir*=-1;
     if((XBoule-larg_balle/2)<-50) Xdir*=-1;
-    if((YBoule+larg_balle/2)>25)  Ydir*=-1;
-    if((YBoule-larg_balle/2)<-25)
+    if((YBoule+larg_balle/2)>23)  Ydir*=-1;
+    if((YBoule-larg_balle/2)<-23)
     {
         etatPartie();
     }
 
     // Teste les collisions entre la boule et la barre
-    if((YBoule-larg_balle/2<=-25+hauteurBarre_)) // Si la balle est au niveau de la barre
+    if((YBoule-larg_balle/2<=-22+hauteurBarre_)) // Si la balle est au niveau de la barre
     {
         // Teste au niveau de l'axe des abscisses
         if(((XBoule+larg_balle/2)>=(xBarre_-longueurBarre_/2)) && ((XBoule-larg_balle/2)<=(xBarre_+longueurBarre_/2)))

@@ -33,7 +33,7 @@ void Brique::Display(const float timeInDays) const
 
     glBegin(GL_QUADS); // Primitive à afficher et début de la déclaration des vertices de cette primitive
     //face avant
-    glColor3f(255,255,255);
+
     glTexCoord2f(0, 0); glVertex3f(x_ - longueur_ / 2, y_ - hauteur_ / 2,z_);  // Définition des coordonnées des sommets (en 2D, z=0)
     glTexCoord2f(1, 0); glVertex3f(x_ + longueur_ / 2 , y_ - hauteur_ / 2,z_);
     glTexCoord2f(1, 1); glVertex3f(x_ + longueur_ / 2, y_ + hauteur_/2,z_);

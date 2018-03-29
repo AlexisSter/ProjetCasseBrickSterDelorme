@@ -74,6 +74,10 @@ private:
     QImage image;
     GLuint m_textureFond;
     QImage imageFond;
+    GLuint m_textureBoule;
+    QImage imageBoule;
+    GLuint m_textureBarre;
+    QImage imageBarre;
     bool pause;
     int nbBoules_;
     int score_;
