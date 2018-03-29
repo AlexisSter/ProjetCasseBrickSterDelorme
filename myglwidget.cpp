@@ -28,9 +28,18 @@ MyGLWidget::MyGLWidget(QWidget * parent) : QGLWidget(parent)
     move(QApplication::desktop()->screen()->rect().center() - rect().center());
     initializeGL();
     // Connexion du timer
+    pause = false;
+    start = false;
     connect(&m_AnimationTimer,  &QTimer::timeout, [&] {
-        m_TimeElapsed += 0.01f; // 12.0f;
-        updateGL();
+        if(start)
+        {
+            if(!pause)
+            {
+                m_TimeElapsed += 0.01f; // 12.0f;
+                updateGL();
+            }
+        }
+
     });
 
     m_AnimationTimer.setInterval(10);
@@ -41,13 +50,15 @@ MyGLWidget::MyGLWidget(QWidget * parent) : QGLWidget(parent)
     yBarre_ = 0.05;
     longueurBarre_ = 10;
     hauteurBarre_ = 3;
-    Xdir = 0.1;
+    Xdir = 0.0;
     Ydir = 0.1;
-    start = false;
     place =false;
     occupied1 = false;
     occupied2 = false;
 
+    XBoule = 0;
+    YBoule = -21.0;
+    nbBoules_ = 3;
 }
 
 
@@ -71,15 +82,8 @@ void MyGLWidget::initializeGL()
             placerBrique(100);
             place=true;
             qDebug("coucou");
-
         }
-
     }
-
-
-
-
-
 }
 
 void MyGLWidget::placerBrique(int n){
@@ -97,23 +101,16 @@ void MyGLWidget::placerBrique(int n){
 
             yStart = yStart - hauteur;
 
-         }
+        }
 
         Brique *briquei = new Brique(xStart+(i-t)*pas+(i-t)*largeur, yStart, -1, largeur,hauteur,1,m_texture,image);
         briquei->setColor((float)rand()/RAND_MAX,(float)rand()/RAND_MAX,(float)rand()/RAND_MAX);
         m_Brique.push_back(briquei);
-
-
     }
-
-
-
 }
 
 void MyGLWidget::affiche_barre()
 {
-
-
     glBegin(GL_QUADS); // Primitive à afficher et début de la déclaration des vertices de cette primitive
     //face avant
     glColor3f(0.0,0.0,1.0);
@@ -154,7 +151,6 @@ void MyGLWidget::mouseMoveEvent(QMouseEvent *event)
     this->setMouseTracking(true);
     QPoint positionSouris = event->pos();
     QString message = "x : " + QString::number(positionSouris.x()) + " - y : " + QString::number(positionSouris.y())+ " - xbarre : " + QString::number(xBarre_);
-    start=true;
     if(start)
     {
         xBarre_ =-50+ positionSouris.x() /13;
@@ -171,24 +167,26 @@ void MyGLWidget::drawBoule(float radius)
     glTranslatef(XBoule,YBoule,0);
     GLUquadric* quadrique=gluNewQuadric();
     gluSphere(quadrique, radius, 100, 100);
-
     gluDeleteQuadric(quadrique);
 }
 
 int MyGLWidget::gestionBoule(float larg_balle)
 {
 
-  // Affiche la balle
+    // Affiche la balle
 
-  drawBoule(larg_balle);
+    drawBoule(larg_balle);
 
-  // Avance la balle
+    // Avance la balle
     // Gère les rebonds
 
     if((XBoule+larg_balle/2)>50)  Xdir*=-1;
     if((XBoule-larg_balle/2)<-50) Xdir*=-1;
-    if((YBoule+larg_balle/2)>23)  Ydir*=-1;
-    if((YBoule-larg_balle/2)<-25) return 0; // La balle est derri�re la barre... fin du jeu
+    if((YBoule+larg_balle/2)>25)  Ydir*=-1;
+    if((YBoule-larg_balle/2)<-25)
+    {
+        etatPartie();
+    }
 
     // Teste les collisions entre la boule et la barre
     if((YBoule-larg_balle/2<=-25+hauteurBarre_)) // Si la balle est au niveau de la barre
@@ -239,16 +237,8 @@ int MyGLWidget::gestionBoule(float larg_balle)
                         m_Brique[j]->setTouched(true);
                         m_Brique[j]->briqueTouched();
                         Ydir=Ydir * -1;
-                        //occupied2=true;
-                        coin=coin+1;
-                        }
-
-
-
-
-
-
-
+                        joueur_.score();
+                    }
                 }
             }
             if((XBoule+larg_balle >= xBrique-longueurBrique/2   && XBoule+larg_balle < 0.1+xBrique-longueurBrique/2 )|| ((XBoule-larg_balle <= xBrique+longueurBrique/2   && XBoule-larg_balle > -0.1+xBrique-longueurBrique/2 )) && !occupied2 ) // Si la balle est au niveau de la case
@@ -262,19 +252,10 @@ int MyGLWidget::gestionBoule(float larg_balle)
                         m_Brique[j]->setTouched(true);
                         m_Brique[j]->briqueTouched();
                         Xdir=Xdir * -1;
-                        //occupied1=true;
-                        coin=coin+1;
-                        }
-
-
-
-
-
+                        joueur_.score();
+                    }
                 }
             }
-
-
-
         }
 
     }
@@ -286,7 +267,32 @@ int MyGLWidget::gestionBoule(float larg_balle)
     return 1; // Fin de la fonction, tous s'est bine pass� !
 }
 
+void MyGLWidget::etatPartie()
+{
+    nbBoules_ = nbBoules_ - 1;
+    if(nbBoules_>0)
+    {
+        playNextBoule();
+    }
+    else
+    {
+            m_TexteAAfficher ="T'as perdu sale grosse merde";
+            renderText(50, 500, m_TexteAAfficher);
+            //QString("Objet selectionne : %1").arg(QString::fromStdString(planet->GetName()));
+    }
+}
 
+void MyGLWidget::playNextBoule()
+{
+    setBarre(0.5,0.05,10,3);
+    setBoule(0,-21.0);
+    Xdir = 0.0;
+    Ydir = 0.1;
+    drawBoule(1);
+    affiche_barre();
+    updateGL();
+    start = false;
+}
 
 // Fonction de redimensionnement
 void MyGLWidget::resizeGL(int width, int height)
@@ -307,15 +313,6 @@ void MyGLWidget::resizeGL(int width, int height)
 // Fonction d'affichage
 void MyGLWidget::paintGL()
 {
-
-
-
-    // Reinitialisation du tampon de couleur
-
-    // Reinitialisation de la matrice courante
-
-
-    // Reinitialisation des tampons
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Definition de la position de la camera
@@ -333,14 +330,10 @@ void MyGLWidget::paintGL()
     for ( int i = 0; i<m_Brique.size();i++){
         m_Brique[i]->Display(m_TimeElapsed);
     }
-
-
-
     affiche_barre();
-    //drawBoule(0.5, 0.2, 0.03);
+    QString score = joueur_.displayScore();
+    renderText(30,30, score);
     gestionBoule(0.5);
-
-
 }
 
 
@@ -372,7 +365,7 @@ void MyGLWidget::keyPressEvent(QKeyEvent * event)
 
     case Qt::Key_Space:
     {
-        //start = !start;
+        start = true;
         break;
     }
 
@@ -403,9 +396,9 @@ void MyGLWidget::keyPressEvent(QKeyEvent * event)
         break;
     }
 
-    case Qt::Key_R:
+    case Qt::Key_P:
     {
-
+        pause = !pause;
         break;
     }
         // Cas par defaut

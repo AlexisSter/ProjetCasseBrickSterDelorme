@@ -19,8 +19,10 @@ TARGET 	  = TD1
 
 # fichiers sources/headers
 SOURCES	+= main.cpp myglwidget.cpp \
-    brique.cpp
+    brique.cpp \
+    joueur.cpp
 HEADERS += myglwidget.h \
-    brique.h
+    brique.h \
+    joueur.h
 
 RESOURCES +=

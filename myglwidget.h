@@ -9,6 +9,8 @@
 #include <QVector2D>
 #include"GL/gl.h"
 #include <QTimer>
+#include <QTextEdit>
+#include "joueur.h"
 
 
 // Classe dediee a l'affichage d'une scene OpenGL
@@ -41,15 +43,20 @@ protected:
     QPoint gestion_barre(float largeur);
     void drawBoule(float radius);
     int gestionBoule( float larg_balle);
+    setBoule(float x, float y){XBoule = x; YBoule = y;}
+    setBarre(float x, float y, float longueur, float hauteur){xBarre_ = x, yBarre_ = y, longueurBarre_ = longueur, hauteurBarre_ = hauteur;}
+    void etatPartie(); //vérifie le nombre de boules
+    void playNextBoule(); // réinitialise la plateau pour la boule suivante
 
 private:
     // Quelques variables a definir
     // changer de primitive
+    Joueur joueur_;
     std::vector<Brique *> m_Brique;
     bool briqueAlive_;
     //coordonnées
-    float XBoule=0;
-    float YBoule=0;
+    float XBoule;
+    float YBoule;
     float xBarre_;
     float yBarre_;
     float longueurBarre_;
@@ -64,6 +71,11 @@ private:
     bool place;
     GLuint m_texture;
     QImage image;
+    bool pause;
+    int nbBoules_;
+    int score_;
+    QString m_TexteAAfficher;
+
 
 
 };
