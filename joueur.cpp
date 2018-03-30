@@ -10,6 +10,7 @@ using namespace std;
 Joueur::Joueur()
 {
     score_ = 0;
+    nomJoueur = "";
 }
 
 void Joueur::score()
@@ -23,17 +24,26 @@ QString Joueur::displayScore()
     return m_ScoreAAfficher;
 }
 
-void Joueur::setNomJoueur(QString text)
-{
-     listeNoms.push_back(text);
-     qDebug() << listeNoms[0];
-}
 
 void Joueur::enregistrer()
 {
     ofstream os;
     os.open("Score.txt");
-    os << "Bonjour";
+    listeScores.push_back(score_);
+    os << listeScores[0];
     os.close();
+}
 
+void Joueur::charger()
+{
+    QString texte;
+       QFile fichier("Score.txt");
+
+       if(fichier.open(QIODevice::ReadOnly | QIODevice::Text))
+       {
+            texte = fichier.readAll();
+            fichier.close();
+       }
+       else texte = "Impossible d'ouvrir le fichier !";
+    qDebug() << texte;
 }

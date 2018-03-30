@@ -379,6 +379,7 @@ void MyGLWidget::paintGL()
     QString score = joueur_.displayScore();
     renderText(30,30, score);
     gestionBoule(0.5);
+    joueur_.charger();
     if(nbBoules_ ==0)
     {
         bool ok;
@@ -386,7 +387,7 @@ void MyGLWidget::paintGL()
                                               tr("User name:"), QLineEdit::Normal,
                                               QDir::home().dirName(), &ok);
          if (ok && !text.isEmpty())
-            qDebug()<< text;
+            joueur_.getName(text.toStdString());
     }
 }
 
