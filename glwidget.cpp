@@ -1,4 +1,4 @@
-#include "myglwidget.h"
+#include "glwidget.h"
 #include <QApplication>
 #include <QDesktopWidget>
 #include <stdlib.h>
@@ -9,9 +9,7 @@
 #include<QMouseEvent>
 #include "brique.h"
 #include <GL/glu.h>
-#include<QDir>
-#include<QInputDialog>
-#include<QLineEdit>
+#include <QGLWidget>
 
 // Declarations des constantes
 const unsigned int WIN_WIDTH  = 1300;
@@ -24,21 +22,21 @@ int a=0;
 
 
 // Constructeur
-MyGLWidget::MyGLWidget(QWidget * parent) : QGLWidget(parent)
+GLWidget::GLWidget(QWidget * parent) : QGLWidget(parent)
 {
     // Reglage de la taille/position
     setFixedSize(WIN_WIDTH, WIN_HEIGHT);
-    move(QApplication::desktop()->screen()->rect().center() - rect().center());
+    //move(QApplication::desktop()->screen()->rect().center() - rect().center());
     initializeGL();
     // Connexion du timer
     pause = false;
-    start = false;
+    start = true;
     connect(&m_AnimationTimer,  &QTimer::timeout, [&] {
         if(start)
         {
             if(!pause)
             {
-                m_TimeElapsed += 0.02f; // 12.0f;
+                m_TimeElapsed += 0.01f; // 12.0f;
                 updateGL();
             }
         }
@@ -66,7 +64,7 @@ MyGLWidget::MyGLWidget(QWidget * parent) : QGLWidget(parent)
 
 
 // Fonction d'initialisation
-void MyGLWidget::initializeGL()
+void GLWidget::initializeGL()
 {
     // Reglage de la couleur de fond
     glEnable(GL_TEXTURE_2D);
@@ -77,10 +75,10 @@ void MyGLWidget::initializeGL()
     if(!place){
         a=a+1;
         if(a==1){
-            QImage qim_Texture1 = QGLWidget::convertToGLFormat(QImage("C:/Users/Tanguy/Documents/Cours/Fise2/Bibliotheque_multimedia/ProjetCasseBrique/ProjetCasseBrickSterDelorme/texture10.png"));
-            QImage qim_Texture2 = QGLWidget::convertToGLFormat(QImage("C:/Users/Tanguy/Documents/Cours/Fise2/Bibliotheque_multimedia/ProjetCasseBrique/ProjetCasseBrickSterDelorme/texture6.jpg"));
-            QImage qim_Texture3 = QGLWidget::convertToGLFormat(QImage("C:/Users/Tanguy/Documents/Cours/Fise2/Bibliotheque_multimedia/ProjetCasseBrique/ProjetCasseBrickSterDelorme/texture11.png"));
-            QImage qim_Texture4 = QGLWidget::convertToGLFormat(QImage("C:/Users/Tanguy/Documents/Cours/Fise2/Bibliotheque_multimedia/ProjetCasseBrique/ProjetCasseBrickSterDelorme/texture12.png"));
+            QImage qim_Texture1 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/texture10.png"));
+            QImage qim_Texture2 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/texture6.jpg"));
+            QImage qim_Texture3 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/texture11.png"));
+            QImage qim_Texture4 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/texture12.png"));
             GLuint* m_TextureID = new GLuint[4];
             glGenTextures( 4, m_TextureID );
             m_texture=m_TextureID[0];
@@ -93,11 +91,12 @@ void MyGLWidget::initializeGL()
             imageBarre=qim_Texture4;
             placerBrique(100);
             place=true;
+            qDebug("coucou");
         }
     }
 }
 
-void MyGLWidget::placerBrique(int n){
+void GLWidget::placerBrique(int n){
 
 
     float xStart = -41 ;
@@ -119,7 +118,7 @@ void MyGLWidget::placerBrique(int n){
         m_Brique.push_back(briquei);
     }
 }
-void MyGLWidget::afficheFond(){
+void GLWidget::afficheFond(){
     glBindTexture( GL_TEXTURE_2D, m_textureFond);
     glTexImage2D( GL_TEXTURE_2D, 0, 4, imageFond.width(), imageFond.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, imageFond.bits() );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -137,7 +136,7 @@ void MyGLWidget::afficheFond(){
 
 
 }
-void MyGLWidget::affiche_barre()
+void GLWidget::affiche_barre()
 {
 
     glBindTexture( GL_TEXTURE_2D, m_textureBarre);
@@ -179,7 +178,7 @@ void MyGLWidget::affiche_barre()
     glEnd();
 
 }
-void MyGLWidget::mouseMoveEvent(QMouseEvent *event)
+void GLWidget::mouseMoveEvent(QMouseEvent *event)
 {
 
     if(start)
@@ -194,7 +193,7 @@ void MyGLWidget::mouseMoveEvent(QMouseEvent *event)
 }
 
 
-void MyGLWidget::drawBoule(float radius)
+void GLWidget::drawBoule(float radius)
 {
     glBindTexture(GL_TEXTURE_2D,m_textureBoule);
     //Transmet à OpenGL toutes les caractéristiques de la texture courante : largeur, hauteur, format, etc... et bien sûr l'image
@@ -209,7 +208,7 @@ void MyGLWidget::drawBoule(float radius)
     gluDeleteQuadric(quadrique);
 }
 
-int MyGLWidget::gestionBoule(float larg_balle)
+int GLWidget::gestionBoule(float larg_balle)
 {
 
     // Affiche la balle
@@ -306,32 +305,28 @@ int MyGLWidget::gestionBoule(float larg_balle)
     return 1; // Fin de la fonction, tous s'est bine pass� !
 }
 
-void MyGLWidget::etatPartie()
+void GLWidget::etatPartie()
 {
     nbBoules_ = nbBoules_ - 1;
     if(nbBoules_>0)
     {
         start = false;
         playNextBoule();
+
         updateGL();
+
+
     }
     else
     {
-        m_TexteAAfficher ="T'as perdu sale grosse merde";
-        renderText(50, 500, m_TexteAAfficher);
-        joueur_.checkTop();
-        QList<int> score = joueur_.displayTop();
-        for(int i=0; i<score.size();i++)
-        {
-            renderText(30,30+10*i,i + " : " + score.at(i));
-        }
-        start = false;
-        pause = true;
-        //QString("Objet selectionne : %1").arg(QString::fromStdString(planet->GetName()));
+            m_TexteAAfficher ="T'as perdu sale grosse merde";
+            renderText(50, 500, m_TexteAAfficher);
+
+            //QString("Objet selectionne : %1").arg(QString::fromStdString(planet->GetName()));
     }
 }
 
-void MyGLWidget::playNextBoule()
+void GLWidget::playNextBoule()
 {
     setBarre(0.5,0.05,10,1);
     setBoule(0,-20.5);
@@ -341,7 +336,7 @@ void MyGLWidget::playNextBoule()
 }
 
 // Fonction de redimensionnement
-void MyGLWidget::resizeGL(int width, int height)
+void GLWidget::resizeGL(int width, int height)
 {
     // Definition du viewport (zone d'affichage)
     glViewport(0,0,1300,600);
@@ -357,7 +352,7 @@ void MyGLWidget::resizeGL(int width, int height)
 
 
 // Fonction d'affichage
-void MyGLWidget::paintGL()
+void GLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -382,20 +377,11 @@ void MyGLWidget::paintGL()
     QString score = joueur_.displayScore();
     renderText(30,30, score);
     gestionBoule(0.5);
-    if(nbBoules_ ==0)
-    {
-        bool ok;
-        QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
-                                             tr("User name:"), QLineEdit::Normal,
-                                             QDir::home().dirName(), &ok);
-        if (ok && !text.isEmpty())
-            joueur_.getName(text.toStdString());
-    }
 }
 
 
 // Fonction de gestion d'interactions clavier
-void MyGLWidget::keyPressEvent(QKeyEvent * event)
+void GLWidget::keyPressEvent(QKeyEvent * event)
 {
     switch(event->key())
     {

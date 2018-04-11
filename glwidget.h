@@ -14,14 +14,15 @@
 
 
 // Classe dediee a l'affichage d'une scene OpenGL
-class MyGLWidget : public QGLWidget
+class GLWidget : public QGLWidget
 {
     Q_OBJECT
 
 public:
+    explicit GLWidget(QWidget *parent = 0);
 
     // Constructeur
-    MyGLWidget(QWidget * parent = nullptr);
+
 
 protected:
 
@@ -43,8 +44,8 @@ protected:
     QPoint gestion_barre(float largeur);
     void drawBoule(float radius);
     int gestionBoule( float larg_balle);
-    void setBoule(float x, float y){XBoule = x; YBoule = y;}
-    void setBarre(float x, float y, float longueur, float hauteur){xBarre_ = x, yBarre_ = y, longueurBarre_ = longueur, hauteurBarre_ = hauteur;}
+    setBoule(float x, float y){XBoule = x; YBoule = y;}
+    setBarre(float x, float y, float longueur, float hauteur){xBarre_ = x, yBarre_ = y, longueurBarre_ = longueur, hauteurBarre_ = hauteur;}
     void etatPartie(); //vérifie le nombre de boules
     void playNextBoule(); // réinitialise la plateau pour la boule suivante
     void afficheFond();
@@ -87,4 +88,4 @@ private:
 
 };
 
-#endif // MYGLWIDGET_H
+#endif // GLWIDGET_H
