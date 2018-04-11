@@ -10,6 +10,7 @@
 #include "brique.h"
 #include <GL/glu.h>
 #include <QGLWidget>
+#include "mainwindow.h"
 
 // Declarations des constantes
 const unsigned int WIN_WIDTH  = 1300;
@@ -25,8 +26,12 @@ int a=0;
 GLWidget::GLWidget(QWidget * parent) : QGLWidget(parent)
 {
     // Reglage de la taille/position
+
+
+
+
     setFixedSize(WIN_WIDTH, WIN_HEIGHT);
-    //move(QApplication::desktop()->screen()->rect().center() - rect().center());
+    move(QApplication::desktop()->screen()->rect().center() - rect().center());
     initializeGL();
     // Connexion du timer
     pause = false;

@@ -11,6 +11,7 @@
 #include <QTimer>
 #include <QTextEdit>
 #include "joueur.h"
+#include <string>
 
 
 // Classe dediee a l'affichage d'une scene OpenGL
@@ -66,6 +67,7 @@ private:
     float Xdir;
     float Ydir;
     bool start;
+
     bool occupied1;
     bool occupied2;
     QTimer m_AnimationTimer;

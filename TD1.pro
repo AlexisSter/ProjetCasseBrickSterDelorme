@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui opengl widgets
+QT       += core gui opengl
 
 #greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -24,6 +24,23 @@ LIBS += -lopengl32 -lglu32
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+#CONFIG   += console
+#CONFIG   -= app_bundle
+
+
+
+
+
+
+INCLUDEPATH +=$$(OPENCV_DIR)\..\..\include
+
+LIBS += -L$$(OPENCV_DIR)\lib \
+  -lopencv_core2413 \
+    -lopencv_highgui2413 \
+    -lopencv_imgproc2413 \
+    -lopencv_features2d2413 \
+    -lopencv_calib3d2413 \
+    #-lmingw32
 
 
 SOURCES += \
@@ -31,13 +48,15 @@ SOURCES += \
     glwidget.cpp \
     joueur.cpp \
     brique.cpp \
-    main.cpp
+    main.cpp \
+    test_detectmotion.cpp
 
 HEADERS += \
         mainwindow.h \
     glwidget.h \
     joueur.h \
-    brique.h
+    brique.h \
+    test_detectmotion.h
 
 FORMS += \
         mainwindow.ui
