@@ -38,7 +38,7 @@ MyGLWidget::MyGLWidget(QWidget * parent) : QGLWidget(parent)
         {
             if(!pause)
             {
-                m_TimeElapsed += 0.01f; // 12.0f;
+                m_TimeElapsed += 0.02f; // 12.0f;
                 updateGL();
             }
         }
@@ -313,18 +313,21 @@ void MyGLWidget::etatPartie()
     {
         start = false;
         playNextBoule();
-
         updateGL();
-
-
     }
     else
     {
-            m_TexteAAfficher ="T'as perdu sale grosse merde";
-            renderText(50, 500, m_TexteAAfficher);
-            joueur_.enregistrer();
-
-            //QString("Objet selectionne : %1").arg(QString::fromStdString(planet->GetName()));
+        m_TexteAAfficher ="T'as perdu sale grosse merde";
+        renderText(50, 500, m_TexteAAfficher);
+        joueur_.checkTop();
+        QList<int> score = joueur_.displayTop();
+        for(int i=0; i<score.size();i++)
+        {
+            renderText(30,30+10*i,i + " : " + score.at(i));
+        }
+        start = false;
+        pause = true;
+        //QString("Objet selectionne : %1").arg(QString::fromStdString(planet->GetName()));
     }
 }
 
@@ -379,14 +382,13 @@ void MyGLWidget::paintGL()
     QString score = joueur_.displayScore();
     renderText(30,30, score);
     gestionBoule(0.5);
-    joueur_.charger();
     if(nbBoules_ ==0)
     {
         bool ok;
-         QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
-                                              tr("User name:"), QLineEdit::Normal,
-                                              QDir::home().dirName(), &ok);
-         if (ok && !text.isEmpty())
+        QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
+                                             tr("User name:"), QLineEdit::Normal,
+                                             QDir::home().dirName(), &ok);
+        if (ok && !text.isEmpty())
             joueur_.getName(text.toStdString());
     }
 }

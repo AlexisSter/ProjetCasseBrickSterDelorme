@@ -22,6 +22,8 @@ public:
     void enregistrer();
     void topPlayer();
     void getName(string name){nomJoueur=name;}
+    void checkTop();
+    QList<int> displayTop(){return listeScores;}
 private :
 
 };
