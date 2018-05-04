@@ -119,11 +119,11 @@ void GLWidget::placerBrique(int n){
     }
 }
 void GLWidget::afficheFond(){
-    /*glBindTexture( GL_TEXTURE_2D, m_textureFond);
+    glBindTexture( GL_TEXTURE_2D, m_textureFond);
     glTexImage2D( GL_TEXTURE_2D, 0, 4, imageFond.width(), imageFond.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, imageFond.bits() );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-*/
+
     glBegin(GL_QUADS); // Primitive à afficher et début de la déclaration des vertices de cette primitive
     //face avant
 
