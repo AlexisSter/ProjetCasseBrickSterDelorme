@@ -10,8 +10,8 @@ Brique::Brique(float x, float y,float z, float longueur, float hauteur,float pro
     hauteur_ = hauteur;
     profondeur_=profondeur;
     touched_ = false;
-    texture_id=text;
-    texture_image=texture;
+    //texture_id=text;
+    //texture_image=texture;
 }
 
 

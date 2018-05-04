@@ -119,10 +119,11 @@ void GLWidget::placerBrique(int n){
     }
 }
 void GLWidget::afficheFond(){
-    glBindTexture( GL_TEXTURE_2D, m_textureFond);
+    /*glBindTexture( GL_TEXTURE_2D, m_textureFond);
     glTexImage2D( GL_TEXTURE_2D, 0, 4, imageFond.width(), imageFond.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, imageFond.bits() );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+*/
     glBegin(GL_QUADS); // Primitive à afficher et début de la déclaration des vertices de cette primitive
     //face avant
 
@@ -143,9 +144,10 @@ void GLWidget::affiche_barre()
     glTexImage2D( GL_TEXTURE_2D, 0, 4, imageBarre.width(), imageBarre.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, imageBarre.bits() );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
     glBegin(GL_QUADS); // Primitive à afficher et début de la déclaration des vertices de cette primitive
     //face avant
-
+    glColor3f(0,0,0);
     glTexCoord2f(0, 1);glVertex3f(xBarre_ - longueurBarre_ / 2,-22 + hauteurBarre_,-1);  // Définition des coordonnées des sommets (en 2D, z=0) OK
     glTexCoord2f(1, 1);glVertex3f(xBarre_ + longueurBarre_/ 2 , -22+hauteurBarre_,-1);
     glTexCoord2f(1, 0);glVertex3f(xBarre_ + longueurBarre_ / 2, -22,-1);
@@ -350,7 +352,11 @@ void GLWidget::resizeGL(int width, int height)
     glLoadIdentity();
 }
 
+void GLWidget::setXbarre(int x){
+    pas=x;
 
+
+}
 // Fonction d'affichage
 void GLWidget::paintGL()
 {
@@ -371,6 +377,19 @@ void GLWidget::paintGL()
     for ( int i = 0; i<m_Brique.size();i++){
         m_Brique[i]->Display(m_TimeElapsed);
     }
+
+    if((xBarre_ -6 )<=-49){
+         xBarre_=-44;
+
+    }
+    if((xBarre_+6) >=50 ){
+        xBarre_=45;
+
+     }
+    else{
+       xBarre_=xBarre_ + pas;
+    }
+
     glColor3f(1,1,1);
     afficheFond();
     affiche_barre();

@@ -22,6 +22,7 @@ public:
     explicit GLWidget(QWidget *parent = 0);
 
     // Constructeur
+    void setXbarre(int x);
 
 
 protected:
@@ -34,6 +35,7 @@ protected:
 
     // Fonction d'affichage
     void paintGL();
+
 
     // Fonction de gestion d'interactions clavier
     void keyPressEvent(QKeyEvent * event);
@@ -57,6 +59,7 @@ private:
     std::vector<Brique *> m_Brique;
     bool briqueAlive_;
     //coordonnées
+    int pas;
     float XBoule;
     float YBoule;
     float xBarre_;
