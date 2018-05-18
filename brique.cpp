@@ -12,6 +12,7 @@ Brique::Brique(float x, float y,float z, float longueur, float hauteur,float pro
     touched_ = false;
     texture_id=text;
     texture_image=texture;
+    hpBrique = (int)rand()/(RAND_MAX/2);
 }
 
 

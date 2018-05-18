@@ -10,11 +10,16 @@
 #include "brique.h"
 #include <GL/glu.h>
 #include <QGLWidget>
+#include<QDir>
+#include<QInputDialog>
+#include<QLineEdit>
+#include<QList>
+#include<QMessageBox>
 
 // Declarations des constantes
-const unsigned int WIN_WIDTH  = 1300;
-const unsigned int WIN_HEIGHT = 600;
-const float ASPECT_RATIO      = static_cast<float>(WIN_WIDTH) / WIN_HEIGHT;
+const unsigned int WIN_WIDTH  = 1000;
+const unsigned int WIN_HEIGHT = 500;
+const float ASPECT_RATIO      = 0.4f;
 const float ORTHO_DIM         = 50.0f;
 
 const float MAX_DIMENSION     = 50.0f;
@@ -25,25 +30,43 @@ int a=0;
 GLWidget::GLWidget(QWidget * parent) : QGLWidget(parent)
 {
     // Reglage de la taille/position
-    setFixedSize(WIN_WIDTH, WIN_HEIGHT);
+    //setFixedSize(WIN_WIDTH, WIN_HEIGHT);
     //move(QApplication::desktop()->screen()->rect().center() - rect().center());
     initializeGL();
     // Connexion du timer
     pause = false;
-    start = true;
+    start = false;
+    joueur_.checkTop();
+    un = joueur_.numero1();
+    deux = joueur_.numero2();
+    trois = joueur_.numero3();
+    quatre = joueur_.numero4();
+    cinq = joueur_.numero5();
+    six = joueur_.numero6();
+    sept = joueur_.numero7();
+    huit = joueur_.numero8();
+    neuf = joueur_.numero9();
+    dix = joueur_.numero10();
+
+
     connect(&m_AnimationTimer,  &QTimer::timeout, [&] {
+
+
         if(start)
         {
             if(!pause)
             {
-                m_TimeElapsed += 0.01f; // 12.0f;
+                //m_TimeElapsed += 0.01f; // 12.0f;
                 updateGL();
+
+
+
             }
         }
 
     });
 
-    m_AnimationTimer.setInterval(10);
+    m_AnimationTimer.setInterval(1);
     m_AnimationTimer.start();
     briqueAlive_ = true;
 
@@ -52,13 +75,13 @@ GLWidget::GLWidget(QWidget * parent) : QGLWidget(parent)
     longueurBarre_ = 10;
     hauteurBarre_ = 1;
     Xdir = 0.0;
-    Ydir = 0.1;
+    Ydir = 0.3;
     place =false;
     occupied1 = false;
     occupied2 = false;
 
     XBoule = 0;
-    YBoule = -20.5;
+    YBoule = -18.5;
     nbBoules_ = 3;
 }
 
@@ -76,11 +99,13 @@ void GLWidget::initializeGL()
         a=a+1;
         if(a==1){
             QImage qim_Texture1 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/texture10.png"));
-            QImage qim_Texture2 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/texture6.jpg"));
-            QImage qim_Texture3 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/texture11.png"));
+            QImage qim_Texture2 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/textureFond.jpg"));
+            QImage qim_Texture3 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/textureBoule.png"));
             QImage qim_Texture4 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/texture12.png"));
-            GLuint* m_TextureID = new GLuint[4];
-            glGenTextures( 4, m_TextureID );
+            QImage qim_TextureFin = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/textureFondFin.jpg"));
+            QImage qim_TextureWin = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/textureFondWin.jpg"));
+            GLuint* m_TextureID = new GLuint[6];
+            glGenTextures( 6, m_TextureID );
             m_texture=m_TextureID[0];
             image=qim_Texture1;
             m_textureFond=m_TextureID[1];
@@ -89,24 +114,33 @@ void GLWidget::initializeGL()
             imageBoule=qim_Texture3;
             m_textureBarre=m_TextureID[3];
             imageBarre=qim_Texture4;
-            placerBrique(100);
+            m_textureFin=m_TextureID[4];
+            imageFin=qim_TextureFin;
+            m_textureWin=m_TextureID[5];
+            imageWin=qim_TextureWin;
+            placerBrique(2,-5,10);
+            //placerTSE();
             place=true;
-            qDebug("coucou");
+
         }
     }
 }
 
-void GLWidget::placerBrique(int n){
+void GLWidget::placerBrique(int n,int x, int y){
 
 
-    float xStart = -41 ;
-    float yStart = 21 ;
+    float xStart = x ;
+    float yStart = y;
     float pas = 0;
-    float largeur =9;
-    float hauteur = 1.4;
+    float largeur =10;
+    float hauteur = 3.33;
     int t=0;
+
+    //
+
+
     for(int i=0; i<n;i++){
-        if(xStart+(i-t)*pas+(i-t)*largeur+largeur>50) {
+        if(xStart+(i-t)*pas+(i-t)*largeur+largeur>55) {
             t=i;
 
             yStart = yStart - hauteur;
@@ -114,13 +148,191 @@ void GLWidget::placerBrique(int n){
         }
 
         Brique *briquei = new Brique(xStart+(i-t)*pas+(i-t)*largeur, yStart, -1, largeur,hauteur,1,m_texture,image);
-        briquei->setColor((float)rand()/RAND_MAX,(float)rand()/RAND_MAX,(float)rand()/RAND_MAX);
+        int hp = briquei->getHpBrique();
+        if(hp == 0)
+        {
+            briquei->setColor(255,0,0);
+        }
+        else
+        {
+            briquei->setColor(0,0,255);
+        }
+
         m_Brique.push_back(briquei);
     }
 }
-void GLWidget::afficheFond(){
-    glBindTexture( GL_TEXTURE_2D, m_textureFond);
-    glTexImage2D( GL_TEXTURE_2D, 0, 4, imageFond.width(), imageFond.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, imageFond.bits() );
+void GLWidget::placerTSE(){
+
+    int n=7;
+    float xStart = -40.5 ;
+    float yStart = 10;
+    float pas = 0;
+    float largeur =10;
+    float hauteur = 3.33;
+    int t=0;
+    int save=7;
+    int h=10;
+
+    //
+
+    //T
+    for(int i=0; i<28;i++){
+        if(i<=2) {
+
+            Brique *briquei = new Brique(xStart+(i-t)*pas+(i-t)*largeur, yStart, -1, largeur,hauteur,1,m_texture,image);
+            briquei->setColor(0,0,255);
+            m_Brique.push_back(briquei);
+
+
+        }
+        else if(i>2 && i<7){
+            t=i;
+
+            yStart = yStart - hauteur;
+            Brique *briquei = new Brique(10+xStart+(i-t)*pas+(i-t)*largeur, yStart, -1, largeur,hauteur,1,m_texture,image);
+            briquei->setColor(0,0,255);
+            m_Brique.push_back(briquei);
+        }
+        else if(i>=7 && i<=9){
+            t=7;
+            qDebug()<<"yoyo";
+            yStart=10;
+            Brique *briquei = new Brique(30+xStart+(i-t)*pas+(i-t)*largeur, yStart, -1, largeur,hauteur,1,m_texture,image);
+            briquei->setColor(0,255,0);
+            m_Brique.push_back(briquei);
+
+        }
+        else if(i>9 && i<=10){
+
+
+            yStart = yStart - hauteur;
+            Brique *briquei = new Brique(30+xStart+(i-h)*pas+(i-h)*largeur, yStart, -1, largeur,hauteur,1,m_texture,image);
+            briquei->setColor(0,255,0);
+            m_Brique.push_back(briquei);
+            h++;
+
+        }
+        else if(i>10 && i<=13){
+
+            if(i==11){
+                yStart = yStart - hauteur;
+                h=11;
+
+
+            }
+
+            Brique *briquei = new Brique(30+xStart+(i-h)*pas+(i-h)*largeur, yStart, -1, largeur,hauteur,1,m_texture,image);
+            briquei->setColor(0,255,0);
+            m_Brique.push_back(briquei);
+
+
+        }
+        else if(i>13 && i<=14){
+
+
+                yStart = yStart - hauteur;
+                h=14;
+
+
+
+
+            Brique *briquei = new Brique(50+xStart+(i-h)*pas+(i-h)*largeur, yStart, -1, largeur,hauteur,1,m_texture,image);
+            briquei->setColor(0,255,0);
+            m_Brique.push_back(briquei);
+
+
+        }
+        else if(i>14 && i<=17 ){
+
+            if(i==15){
+                yStart = yStart - hauteur;
+                h=15;
+
+
+            }
+
+            Brique *briquei = new Brique(30+xStart+(i-h)*pas+(i-h)*largeur, yStart, -1, largeur,hauteur,1,m_texture,image);
+            briquei->setColor(0,255,0);
+            m_Brique.push_back(briquei);
+
+
+        }
+        else if(i>17 && i<=20 ){
+
+            yStart=10;
+            h=18;
+
+            Brique *briquei = new Brique(60+xStart+(i-h)*pas+(i-h)*largeur, yStart, -1, largeur,hauteur,1,m_texture,image);
+            briquei->setColor(255,0,0);
+            m_Brique.push_back(briquei);
+
+
+        }
+        else if(i>20 && i<=21 ){
+
+
+                yStart = yStart - hauteur;
+                h=21;
+
+
+
+
+            Brique *briquei = new Brique(60+xStart+(i-h)*pas+(i-h)*largeur, yStart, -1, largeur,hauteur,1,m_texture,image);
+            briquei->setColor(255,0,0);
+            m_Brique.push_back(briquei);
+
+
+        }
+        else if(i>21 && i<=23 ){
+
+            if(i==22){
+            yStart = yStart - hauteur;
+            h=22;
+
+
+            }
+
+        Brique *briquei = new Brique(60+xStart+(i-h)*pas+(i-h)*largeur, yStart, -1, largeur,hauteur,1,m_texture,image);
+        briquei->setColor(255,0,0);
+        m_Brique.push_back(briquei);
+
+
+    }
+    else if(i>23 && i<=24 ){
+
+
+            yStart = yStart - hauteur;
+            h=24;
+
+
+
+
+        Brique *briquei = new Brique(60+xStart+(i-h)*pas+(i-h)*largeur, yStart, -1, largeur,hauteur,1,m_texture,image);
+        briquei->setColor(255,0,0);
+        m_Brique.push_back(briquei);
+
+
+    }
+    else if(i>24 ){
+
+        if(i==25){
+            yStart = yStart - hauteur;
+            h=25;
+
+
+        }
+
+        Brique *briquei = new Brique(60+xStart+(i-h)*pas+(i-h)*largeur, yStart, -1, largeur,hauteur,1,m_texture,image);
+        briquei->setColor(255,0,0);
+        m_Brique.push_back(briquei);
+
+
+    }
+    }
+}
+void GLWidget::afficheFond(GLuint a, QImage b){
+    glBindTexture( GL_TEXTURE_2D, a);
+    glTexImage2D( GL_TEXTURE_2D, 0, 4, b.width(), b.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, b.bits() );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -148,35 +360,35 @@ void GLWidget::affiche_barre()
     glBegin(GL_QUADS); // Primitive à afficher et début de la déclaration des vertices de cette primitive
     //face avant
     glColor3f(0,0,0);
-    glTexCoord2f(0, 1);glVertex3f(xBarre_ - longueurBarre_ / 2,-22 + hauteurBarre_,-1);  // Définition des coordonnées des sommets (en 2D, z=0) OK
-    glTexCoord2f(1, 1);glVertex3f(xBarre_ + longueurBarre_/ 2 , -22+hauteurBarre_,-1);
-    glTexCoord2f(1, 0);glVertex3f(xBarre_ + longueurBarre_ / 2, -22,-1);
-    glTexCoord2f(0, 0);glVertex3f(xBarre_ - longueurBarre_ / 2, -22, -1);
+    glTexCoord2f(0, 1);glVertex3f(xBarre_ - longueurBarre_ / 2,-20 + hauteurBarre_,-1);  // Définition des coordonnées des sommets (en 2D, z=0) OK
+    glTexCoord2f(1, 1);glVertex3f(xBarre_ + longueurBarre_/ 2 , -20+hauteurBarre_,-1);
+    glTexCoord2f(1, 0);glVertex3f(xBarre_ + longueurBarre_ / 2, -20,-1);
+    glTexCoord2f(0, 0);glVertex3f(xBarre_ - longueurBarre_ / 2, -20, -1);
     //face arrière
-    glVertex3f(xBarre_ - longueurBarre_ / 2, -22,-3);  // Définition des coordonnées des sommets (en 2D, z=0) OK
-    glVertex3f(xBarre_ + longueurBarre_ / 2 , -22,-3);
-    glVertex3f(xBarre_ + longueurBarre_ / 2, -22+ hauteurBarre_,-3);
-    glVertex3f(xBarre_ - longueurBarre_ / 2, -22+ hauteurBarre_,-3);
+    glVertex3f(xBarre_ - longueurBarre_ / 2, -20,-3);  // Définition des coordonnées des sommets (en 2D, z=0) OK
+    glVertex3f(xBarre_ + longueurBarre_ / 2 , -20,-3);
+    glVertex3f(xBarre_ + longueurBarre_ / 2, -20+ hauteurBarre_,-3);
+    glVertex3f(xBarre_ - longueurBarre_ / 2, -20+ hauteurBarre_,-3);
     //face dessous
-    glVertex3f(xBarre_ - longueurBarre_ / 2, -22,-1);  // Définition des coordonnées des sommets (en 2D, z=0)OK
-    glVertex3f(xBarre_ - longueurBarre_ / 2 , -22,-3);
-    glVertex3f(xBarre_ + longueurBarre_ / 2, -22,-1);
-    glVertex3f(xBarre_ + longueurBarre_ / 2, -22,-3);
+    glVertex3f(xBarre_ - longueurBarre_ / 2, -20,-1);  // Définition des coordonnées des sommets (en 2D, z=0)OK
+    glVertex3f(xBarre_ - longueurBarre_ / 2 , -20,-3);
+    glVertex3f(xBarre_ + longueurBarre_ / 2, -20,-1);
+    glVertex3f(xBarre_ + longueurBarre_ / 2, -20,-3);
     //face dessus
-    glVertex3f(xBarre_ - longueurBarre_ / 2, -22 + hauteurBarre_,-1);  // Définition des coordonnées des sommets (en 2D, z=0)OK
-    glVertex3f(xBarre_ - longueurBarre_ / 2 , -22 + hauteurBarre_ ,-3);
-    glVertex3f(xBarre_ + longueurBarre_ / 2, -22 + hauteurBarre_,-1);
-    glVertex3f(xBarre_ + longueurBarre_ / 2, -22 + hauteurBarre_,- 3);
+    glVertex3f(xBarre_ - longueurBarre_ / 2, -20 + hauteurBarre_,-1);  // Définition des coordonnées des sommets (en 2D, z=0)OK
+    glVertex3f(xBarre_ - longueurBarre_ / 2 , -20 + hauteurBarre_ ,-3);
+    glVertex3f(xBarre_ + longueurBarre_ / 2, -20 + hauteurBarre_,-1);
+    glVertex3f(xBarre_ + longueurBarre_ / 2, -20 + hauteurBarre_,- 3);
     //face droite
-    glVertex3f(xBarre_ + longueurBarre_ / 2, -22 + hauteurBarre_ ,-1);  // Définition des coordonnées des sommets (en 2D, z=0)
-    glVertex3f(xBarre_ + longueurBarre_ / 2 , -22 + hauteurBarre_,-3);
-    glVertex3f(xBarre_ + longueurBarre_ / 2,  - 22,-1);
-    glVertex3f(xBarre_ + longueurBarre_ / 2, -22,-3);
+    glVertex3f(xBarre_ + longueurBarre_ / 2, -20 + hauteurBarre_ ,-1);  // Définition des coordonnées des sommets (en 2D, z=0)
+    glVertex3f(xBarre_ + longueurBarre_ / 2 , -20 + hauteurBarre_,-3);
+    glVertex3f(xBarre_ + longueurBarre_ / 2,  - 20,-1);
+    glVertex3f(xBarre_ + longueurBarre_ / 2, -20,-3);
     //face gauche
-    glVertex3f(xBarre_ - longueurBarre_ / 2, -22+ hauteurBarre_ ,-1);  // Définition des coordonnées des sommets (en 2D, z=0)
-    glVertex3f(xBarre_ - longueurBarre_ / 2 ,-22 + hauteurBarre_ ,-3);
-    glVertex3f(xBarre_ - longueurBarre_ / 2, -22,-1);
-    glVertex3f(xBarre_ - longueurBarre_ / 2, -22,-3);
+    glVertex3f(xBarre_ - longueurBarre_ / 2, -20+ hauteurBarre_ ,-1);  // Définition des coordonnées des sommets (en 2D, z=0)
+    glVertex3f(xBarre_ - longueurBarre_ / 2 ,-20 + hauteurBarre_ ,-3);
+    glVertex3f(xBarre_ - longueurBarre_ / 2, -20,-1);
+    glVertex3f(xBarre_ - longueurBarre_ / 2, -20,-3);
     glEnd();
 
 }
@@ -188,7 +400,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
         this->setMouseTracking(true);
         QPoint positionSouris = event->pos();
         QString message = "x : " + QString::number(positionSouris.x()) + " - y : " + QString::number(positionSouris.y())+ " - xbarre : " + QString::number(xBarre_);
-        xBarre_ =-50+ positionSouris.x() /13;
+        xBarre_ =-50+ positionSouris.x() /10;
     }
     event->accept();
 
@@ -197,6 +409,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 
 void GLWidget::drawBoule(float radius)
 {
+    glColor3f(0.5,0.5,0.5);
     glBindTexture(GL_TEXTURE_2D,m_textureBoule);
     //Transmet à OpenGL toutes les caractéristiques de la texture courante : largeur, hauteur, format, etc... et bien sûr l'image
     glTexImage2D( GL_TEXTURE_2D, 0, 4, imageBoule.width(),imageBoule.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, imageBoule.bits() );
@@ -214,7 +427,7 @@ int GLWidget::gestionBoule(float larg_balle)
 {
 
     // Affiche la balle
-
+    etatVictoire();
     drawBoule(larg_balle);
 
     // Avance la balle
@@ -222,14 +435,14 @@ int GLWidget::gestionBoule(float larg_balle)
 
     if((XBoule+larg_balle/2)>50)  Xdir*=-1;
     if((XBoule-larg_balle/2)<-50) Xdir*=-1;
-    if((YBoule+larg_balle/2)>23)  Ydir*=-1;
-    if((YBoule-larg_balle/2)<-23)
+    if((YBoule+larg_balle/2)>19.5)  Ydir*=-1;
+    if((YBoule-larg_balle/2)<-20)
     {
         etatPartie();
     }
 
     // Teste les collisions entre la boule et la barre
-    if((YBoule-larg_balle/2<=-22+hauteurBarre_)) // Si la balle est au niveau de la barre
+    if((YBoule-larg_balle/2<=-20+hauteurBarre_)) // Si la balle est au niveau de la barre
     {
         // Teste au niveau de l'axe des abscisses
         if(((XBoule+larg_balle/2)>=(xBarre_-longueurBarre_/2)) && ((XBoule-larg_balle/2)<=(xBarre_+longueurBarre_/2)))
@@ -266,35 +479,60 @@ int GLWidget::gestionBoule(float larg_balle)
         bool touched = m_Brique[j]->getTouched();
         if(!touched)
         {
-            if((YBoule+larg_balle >= yBrique-hauteurBrique/2  && YBoule+larg_balle <0.1+ yBrique-hauteurBrique/2 )|| ((YBoule-larg_balle <= yBrique+hauteurBrique/2  && YBoule-larg_balle > -0.1+yBrique-hauteurBrique/2 )) && !occupied1 ) // Si la balle est au niveau de la case
+            if((XBoule+larg_balle >= xBrique-longueurBrique/2   && XBoule+larg_balle <= 0.5+xBrique-longueurBrique/2 )|| ((XBoule-larg_balle <= xBrique+longueurBrique/2   && XBoule-larg_balle >= -0.5+xBrique-longueurBrique/2 )) && !occupied2 ) // Si la balle est au niveau de la case
+            {
+                // Teste au niveau de l'axe des abscisses
+
+                if((YBoule+larg_balle >= 0.3+yBrique-hauteurBrique/2 && YBoule-larg_balle <-0.3+ yBrique+hauteurBrique/2) )
+                {
+                    occupied1=true;
+                    y=y+1;
+                    if(y%2!=0){
+                        int hp = m_Brique[j]->getHpBrique();
+                        if(hp == 1)
+                        {
+                            m_Brique[j]->setHpBrique(0);
+                            m_Brique[j]->setColor(255,0,0);
+                            Xdir=Xdir * -1;
+                            joueur_.score();
+                        }
+                        else
+                        {
+                            m_Brique[j]->setTouched(true);
+                            m_Brique[j]->briqueTouched();
+                            Xdir=Xdir * -1;
+                            joueur_.score();
+                        }
+                    }
+                }
+            if((YBoule+larg_balle >= yBrique-hauteurBrique/2  && YBoule+larg_balle <=0.5+ yBrique-hauteurBrique/2 )|| ((YBoule-larg_balle <= yBrique+hauteurBrique/2  && YBoule-larg_balle >= -0.5+yBrique-hauteurBrique/2 )) && !occupied1 ) // Si la balle est au niveau de la case
             {
                 // Teste au niveau de l'axe des abscisses
 
                 if((XBoule+larg_balle >= 0.1+xBrique-longueurBrique/2 && XBoule-larg_balle <=-0.1+ xBrique+longueurBrique/2) )
                 {
+                    occupied2=true;
                     i=i+1;
                     if(i%2!=0){
-                        m_Brique[j]->setTouched(true);
-                        m_Brique[j]->briqueTouched();
-                        Ydir=Ydir * -1;
-                        joueur_.score();
+                        int hp = m_Brique[j]->getHpBrique();
+                        if(hp == 1)
+                        {
+                            m_Brique[j]->setHpBrique(0);
+                            m_Brique[j]->setColor(255,0,0);
+                            Ydir=Ydir * -1;
+                            joueur_.score();
+                        }
+                        else
+                        {
+                            m_Brique[j]->setTouched(true);
+                            m_Brique[j]->briqueTouched();
+                            Ydir=Ydir * -1;
+                            joueur_.score();
+                        }
                     }
                 }
             }
-            if((XBoule+larg_balle >= xBrique-longueurBrique/2   && XBoule+larg_balle < 0.1+xBrique-longueurBrique/2 )|| ((XBoule-larg_balle <= xBrique+longueurBrique/2   && XBoule-larg_balle > -0.1+xBrique-longueurBrique/2 )) && !occupied2 ) // Si la balle est au niveau de la case
-            {
-                // Teste au niveau de l'axe des abscisses
 
-                if((YBoule+larg_balle >= 0.1+yBrique-hauteurBrique/2 && YBoule-larg_balle <=-0.1+ yBrique+hauteurBrique/2) )
-                {
-                    y=y+1;
-                    if(y%2!=0){
-                        m_Brique[j]->setTouched(true);
-                        m_Brique[j]->briqueTouched();
-                        Xdir=Xdir * -1;
-                        joueur_.score();
-                    }
-                }
             }
         }
 
@@ -303,37 +541,160 @@ int GLWidget::gestionBoule(float larg_balle)
 
     XBoule=XBoule+Xdir;
     YBoule=YBoule+Ydir;
+    occupied1=false;
+    occupied2=false;
+
 
     return 1; // Fin de la fonction, tous s'est bine pass� !
+}
+void GLWidget::etatVictoire(){
+    int n=0;
+
+    for(int i=0;i<m_Brique.size();i++){
+        if(m_Brique[i]->getTouched()==true){
+            n=n+1;
+        }
+    }
+    if(n==m_Brique.size()){
+        niveau=niveau+1;
+        if(niveau==3){
+            start=false;
+            placerTSE();
+            playNextBoule();
+            updateGL();
+        }
+        else if(niveau<3){
+        start=false;
+        placerBrique(40,-34,16);
+
+        playNextBoule();
+        updateGL();
+        }
+        else{
+            niveau=3;
+
+            joueur_.setNomJoueur(nomJoueur);
+             joueur_.checkTop();
+             un = joueur_.numero1();
+             deux = joueur_.numero2();
+             trois = joueur_.numero3();
+             quatre = joueur_.numero4();
+             cinq = joueur_.numero5();
+             six = joueur_.numero6();
+             sept = joueur_.numero7();
+             huit = joueur_.numero8();
+             neuf = joueur_.numero9();
+             dix = joueur_.numero10();
+
+            start=false;
+            qDebug()<<"you won";
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            glOrtho(-MAX_DIMENSION, MAX_DIMENSION, -MAX_DIMENSION * ASPECT_RATIO, MAX_DIMENSION * ASPECT_RATIO, -MAX_DIMENSION * 2.0f, MAX_DIMENSION * 2.0f);
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+
+            gluLookAt(0,0,5,0,0,0,0,1,0);
+            glColor3f(1,1,1);
+            afficheFond(m_textureWin,imageWin);
+        }
+    }
+
+
 }
 
 void GLWidget::etatPartie()
 {
-    nbBoules_ = nbBoules_ - 1;
-    if(nbBoules_>0)
-    {
-        start = false;
-        playNextBoule();
+    if(start){
+        nbBoules_ = nbBoules_ - 1;
+        if(nbBoules_>0)
+        {
+            start = false;
+            playNextBoule();
+            updateGL();
+        }
+        else
+        {
+            m_TexteAAfficher ="You loose try again !";
+            //renderText(480, 300, m_TexteAAfficher);
+            bool ok;
 
-        updateGL();
+            //imageFond=imageFin;
+            //m_textureFond=m_textureFin;
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            glOrtho(-MAX_DIMENSION, MAX_DIMENSION, -MAX_DIMENSION * ASPECT_RATIO, MAX_DIMENSION * ASPECT_RATIO, -MAX_DIMENSION * 2.0f, MAX_DIMENSION * 2.0f);
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+
+            gluLookAt(0,0,5,0,0,0,0,1,0);
+            glColor3f(1,1,1);
+            afficheFond(m_textureFin,imageFin);
+
+            score = joueur_.displayScore();
 
 
-    }
-    else
-    {
-            m_TexteAAfficher ="T'as perdu sale grosse merde";
-            renderText(50, 500, m_TexteAAfficher);
 
+
+            /*QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
+                                                 tr("User name:"), QLineEdit::Normal,
+                                                 QDir::home().dirName(), &ok);
+            if (ok && !text.isEmpty())
+                joueur_.getName(text.toStdString());*/
+
+            start = false;
+            pause = true;
+            joueur_.setNomJoueur(nomJoueur);
+             joueur_.checkTop();
+             un = joueur_.numero1();
+             deux = joueur_.numero2();
+             trois = joueur_.numero3();
+             quatre = joueur_.numero4();
+             cinq = joueur_.numero5();
+             six = joueur_.numero6();
+             sept = joueur_.numero7();
+             huit = joueur_.numero8();
+             neuf = joueur_.numero9();
+             dix = joueur_.numero10();
+
+
+
+            //QMessageBox msgBox;
+            //msgBox.setText("Tableau des scores !");
+            //msgBox.setInformativeText("Un : " + un + "\n" +"Deux : " + deux + "\n" +"Trois : " + trois + "\n" +"Quatre : " + quatre + "\n" +"Cinq : " + cinq + "\n" +"Six : " + six + "\n" +"Sept : " + sept + "\n" +"Huit : " + huit + "\n" +"Neuf : " + neuf + "\n" +"Dix : " + dix);
+            //msgBox.setStandardButtons(QMessageBox::Ok);
+            //msgBox.setDefaultButton(QMessageBox::Ok);
+            //int ret = msgBox.exec();
+            //switch (ret) {
+            //case QMessageBox::Ok:
+                // Save was clicked
+                //close();
+            //}
+            /*QList<int> score = joueur_.displayTop();
+            for(int i=0; i<score.size();i++)
+            {
+                renderText(30,30+10*i,i + " : " + score.at(i));
+            }*/
             //QString("Objet selectionne : %1").arg(QString::fromStdString(planet->GetName()));
+        }
     }
 }
 
 void GLWidget::playNextBoule()
 {
     setBarre(0.5,0.05,10,1);
-    setBoule(0,-20.5);
+    setBoule(0,-18.5);
     Xdir = 0.0;
-    Ydir = 0.1;
+    Ydir = 0.3;
+    updateGL();
 
 }
 
@@ -341,7 +702,7 @@ void GLWidget::playNextBoule()
 void GLWidget::resizeGL(int width, int height)
 {
     // Definition du viewport (zone d'affichage)
-    glViewport(0,0,1300,600);
+    glViewport(0,0,1000,500);
     // Definition de la matrice de projection
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -356,6 +717,7 @@ void GLWidget::setXbarre(int x){
     pas=x;
 
 
+
 }
 // Fonction d'affichage
 void GLWidget::paintGL()
@@ -365,7 +727,7 @@ void GLWidget::paintGL()
     // Definition de la position de la camera
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-MAX_DIMENSION, MAX_DIMENSION, -MAX_DIMENSION * WIN_HEIGHT / static_cast<float>(WIN_WIDTH), MAX_DIMENSION * WIN_HEIGHT / static_cast<float>(WIN_WIDTH), -MAX_DIMENSION * 2.0f, MAX_DIMENSION * 2.0f);
+    glOrtho(-MAX_DIMENSION, MAX_DIMENSION, -MAX_DIMENSION * ASPECT_RATIO, MAX_DIMENSION * ASPECT_RATIO, -MAX_DIMENSION * 2.0f, MAX_DIMENSION * 2.0f);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
@@ -382,8 +744,8 @@ void GLWidget::paintGL()
          xBarre_=-44;
 
     }
-    if((xBarre_+6) >=50 ){
-        xBarre_=45;
+    if((xBarre_+4) >49 ){
+        xBarre_=44;
 
      }
     else{
@@ -391,11 +753,15 @@ void GLWidget::paintGL()
     }
 
     glColor3f(1,1,1);
-    afficheFond();
+
+    //afficheFond(m_textureFin,imageFin);
+    afficheFond(m_textureFond, imageFond);
+
     affiche_barre();
-    QString score = joueur_.displayScore();
-    renderText(30,30, score);
+    score = joueur_.displayScore();
+    //renderText(30,100, score);
     gestionBoule(0.5);
+
 }
 
 
@@ -475,4 +841,10 @@ void GLWidget::keyPressEvent(QKeyEvent * event)
     // Acceptation de l'evenement et mise a jour de la scene
     event->accept();
     updateGL();
+}
+void GLWidget::setPause(bool pause_){
+    pause=pause_;
+}
+void GLWidget::setStart(bool start_){
+    start=start_;
 }

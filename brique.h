@@ -19,6 +19,8 @@ public:
     void setTouched(bool valeur){ touched_=valeur;}
 
     void setColor(float red_, float green_, float blue_) {red = red_, green=green_, blue = blue_;}
+    int getHpBrique(){return hpBrique;}
+    void setHpBrique(int hp){ hpBrique=hp;}
 private :
     float x_;
     float y_;
@@ -32,6 +34,7 @@ private :
     bool touched_;
     GLuint texture_id;
     QImage texture_image;
+    int hpBrique;
 
 
 protected :

@@ -1,6 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
-
+#ifndef CAM_H
+#define CAM_H
 #include <QMainWindow>
 #include <opencv2/opencv.hpp>
 #include "opencv2/video/tracking.hpp"
@@ -13,20 +12,18 @@
 using namespace cv;
 using namespace std;
 
-namespace Ui {
-class MainWindow;
-}
-
-class MainWindow : public QMainWindow
+class Cam
 {
+public:
+
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    explicit Cam(QWidget *parent = 0);
+    ~Cam();
 
 private:
-    Ui::MainWindow *ui;
+
 
 
 
@@ -42,14 +39,13 @@ private:
     std::vector<cv::Vec3f>::iterator itrCircles;
 
     QTimer* tmrTimer;
-    QTimer* timerScore;
     int frameWidth;
     int frameHeight;
     int subImageWidth;
     int subImageHeight;
     int templateWidth;
     int templateHeight;
-    int i=1;
+    int i=2;
     bool etat=false;
 
     Mat frame1,frame2,frameRect1,frameRect2;
@@ -66,13 +62,10 @@ public:
 
 public slots:
     void processFrameAndUpdateGUI();
-    void updateScore();
 
 
 
 
-private slots:
-    void on_valider_clicked();
 };
 
-#endif // MAINWINDOW_H
+#endif // CAM_H
