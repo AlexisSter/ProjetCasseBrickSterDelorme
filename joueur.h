@@ -11,6 +11,7 @@ class Joueur
 {
 public:
     int score_;
+    //Affichage du score
     QString m_ScoreAAfficher = "";
     QList<int> listeScores;
     QList<QString> listeJoueur;
@@ -18,15 +19,19 @@ public:
     string nomJoueur;
 
     Joueur();
+    //Calcul le score du joueur
     void score();
     QString displayScore();
+    //Chargement et enregistrement des 10 meilleurs scores/joueurs
     void charger();
     void enregistrer();
-    void topPlayer();
-    void getName(string name){nomJoueur=name;}
+    //Verification si le score du joueur fait parti des 10 meilleurs
     void checkTop();
+    //Affichage
     void displayTop();
+    void getName(string name){nomJoueur=name;}
     void setNomJoueur(string a){nomJoueur=a;}
+    //Avoir le score et nom des joueurs du top 10
     QString numero1();
     QString numero2();
     QString numero3();

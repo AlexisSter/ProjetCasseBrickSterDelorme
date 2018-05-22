@@ -99,12 +99,12 @@ void GLWidget::initializeGL()
     if(!place){
         a=a+1;
         if(a==1){
-            QImage qim_Texture1 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/texture10.png"));
-            QImage qim_Texture2 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/textureFond.jpg"));
-            QImage qim_Texture3 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/textureBoule.png"));
-            QImage qim_Texture4 = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/texture12.png"));
-            QImage qim_TextureFin = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/textureFondFin.jpg"));
-            QImage qim_TextureWin = QGLWidget::convertToGLFormat(QImage("C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme/textureFondWin.jpg"));
+            QImage qim_Texture1 = QGLWidget::convertToGLFormat(QImage("C:/Users/Tanguy/Documents/Cours/Fise2/Bibliotheque_multimedia/ProjetCasseBrickSterDelorme/texture10.png"));
+            QImage qim_Texture2 = QGLWidget::convertToGLFormat(QImage("C:/Users/Tanguy/Documents/Cours/Fise2/Bibliotheque_multimedia/ProjetCasseBrickSterDelorme/textureFond.jpg"));
+            QImage qim_Texture3 = QGLWidget::convertToGLFormat(QImage("C:/Users/Tanguy/Documents/Cours/Fise2/Bibliotheque_multimedia/ProjetCasseBrickSterDelorme/textureBoule.png"));
+            QImage qim_Texture4 = QGLWidget::convertToGLFormat(QImage("C:/Users/Tanguy/Documents/Cours/Fise2/Bibliotheque_multimedia/ProjetCasseBrickSterDelorme/texture12.png"));
+            QImage qim_TextureFin = QGLWidget::convertToGLFormat(QImage("C:/Users/Tanguy/Documents/Cours/Fise2/Bibliotheque_multimedia/ProjetCasseBrickSterDelorme/textureFondFin.jpg"));
+            QImage qim_TextureWin = QGLWidget::convertToGLFormat(QImage("C:/Users/Tanguy/Documents/Cours/Fise2/Bibliotheque_multimedia/ProjetCasseBrickSterDelorme/textureFondWin.jpg"));
             GLuint* m_TextureID = new GLuint[6];
             glGenTextures( 6, m_TextureID );
             m_texture=m_TextureID[0];

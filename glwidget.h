@@ -21,8 +21,6 @@ class GLWidget : public QGLWidget
 
 public:
     explicit GLWidget(QWidget *parent = 0);
-
-    // Constructeur
     void setXbarre(int x);
     void setPause(bool pause_);
     void setStart(bool start_);
@@ -30,6 +28,7 @@ public:
     void setNomJoueur(string a) {nomJoueur=a;}
     QString getNbBoule() {return QString::number(nBouleRestante);}
     QString getNiveau() {return QString::number(niveau);}
+    //Récupère les 10 meilleurs scores
     QString getUn() {return un;}
     QString getDeux() {return deux;}
     QString getTrois() {return trois;}
@@ -41,24 +40,16 @@ public:
     QString getNeuf() {return neuf;}
     QString getDix() {return dix;}
     QString getScore() {return score;}
-
-
-
 protected:
 
     // Fonction d'initialisation
     void initializeGL();
-
     // Fonction de redimensionnement
     void resizeGL(int width, int height);
-
     // Fonction d'affichage
     void paintGL();
-
-
     // Fonction de gestion d'interactions clavier
     void keyPressEvent(QKeyEvent * event);
-    void wheelEvent(QScrollEvent *event);
 
     void affiche_barre();
 
@@ -66,7 +57,6 @@ protected:
     void wheelEvent(QWheelEvent * event);
     void placerBrique(int n,int x,int y);
     void placerTSE();
-
     QPoint gestion_barre(float largeur);
     void drawBoule(float radius);
     int gestionBoule( float larg_balle);
@@ -84,31 +74,35 @@ private:
     // changer de primitive
     Joueur joueur_;
     string nomJoueur;
-
+    //Appel de la classe brique, c'est un pointeur
     std::vector<Brique *> m_Brique;
     bool briqueAlive_;
-    //coordonnées
+    //Sert à bouger le palet avec la camera
     int pas;
     QString score;
     bool bordDroit=false;
     bool bordGauche=false;
     int niveau=1;
-    int nBouleRestante=3;
     float XBoule;
     float YBoule;
+    //Coordonnées du palet, taille
     float xBarre_;
     float yBarre_;
     float longueurBarre_;
     float hauteurBarre_;
+    //Incrément des coordonnées de la balle, c'est ce qui donne la vitesse et la direction
     float Xdir;
     float Ydir;
+    //Début de la partie
     bool start;
+    //Détection des collisions des bords
     bool occupied1;
     bool occupied2;
     bool etatJeu;
     QTimer m_AnimationTimer;
     float m_TimeElapsed { 0.0f };
     bool place;
+    //Textures
     GLuint m_texture;
     QImage image;
     GLuint m_textureFond;
