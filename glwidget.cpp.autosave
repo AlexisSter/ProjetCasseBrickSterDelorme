@@ -546,7 +546,7 @@ int GLWidget::gestionBoule(float larg_balle)
     occupied2=false;
 
 
-    return 1; // Fin de la fonction, tous s'est bine pass� !
+    return 1; // Fin de la fonction, tous s'est bine passé !
 }
 void GLWidget::etatVictoire(){
     int n=0;
