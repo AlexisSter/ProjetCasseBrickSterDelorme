@@ -28,7 +28,7 @@ public:
     void setStart(bool start_);
     string getNomJoueur() {return nomJoueur;}
     void setNomJoueur(string a) {nomJoueur=a;}
-    QString getNbBoule() {return QString::number(nbBoules_-1);}
+    QString getNbBoule() {return QString::number(nBouleRestante);}
     QString getNiveau() {return QString::number(niveau);}
     QString getUn() {return un;}
     QString getDeux() {return deux;}
@@ -58,9 +58,12 @@ protected:
 
     // Fonction de gestion d'interactions clavier
     void keyPressEvent(QKeyEvent * event);
+    void wheelEvent(QScrollEvent *event);
 
     void affiche_barre();
+
     void mouseMoveEvent(QMouseEvent *event);
+    void wheelEvent(QWheelEvent * event);
     void placerBrique(int n,int x,int y);
     void placerTSE();
 
@@ -87,7 +90,10 @@ private:
     //coordonnées
     int pas;
     QString score;
+    bool bordDroit=false;
+    bool bordGauche=false;
     int niveau=1;
+    int nBouleRestante=3;
     float XBoule;
     float YBoule;
     float xBarre_;

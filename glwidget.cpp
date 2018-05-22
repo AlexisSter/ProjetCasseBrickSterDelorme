@@ -54,6 +54,7 @@ GLWidget::GLWidget(QWidget * parent) : QGLWidget(parent)
 
         if(start)
         {
+            if(nBouleRestante>=nbBoules_) nBouleRestante--;
             if(!pause)
             {
                 //m_TimeElapsed += 0.01f; // 12.0f;
@@ -406,7 +407,14 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 
 }
 
+void GLWidget::wheelEvent(QScrollEvent *event){
 
+    int a = event->scrollState();
+    qDebug()<<a;
+    //if(a<0) qDebug() << "down";
+    //else qDebug() << "up";
+
+}
 void GLWidget::drawBoule(float radius)
 {
     glColor3f(0.5,0.5,0.5);
@@ -714,7 +722,12 @@ void GLWidget::resizeGL(int width, int height)
 }
 
 void GLWidget::setXbarre(int x){
-    pas=x;
+    if(x>1) pas = 1;
+    else if(x<-1) pas=-1;
+    else if ((x>0.1 && x<=1) ||(x<-0.1  && x>=-1)) pas=x;
+    else pas=0;
+
+
 
 
 
@@ -740,16 +753,27 @@ void GLWidget::paintGL()
         m_Brique[i]->Display(m_TimeElapsed);
     }
 
-    if((xBarre_ -6 )<=-49){
+    if((xBarre_ -4 )<=-48){
          xBarre_=-44;
 
     }
-    if((xBarre_+4) >49 ){
-        xBarre_=44;
+    if((xBarre_+4) >=49 ){
+        xBarre_=45;
+        bordDroit=true;
+
 
      }
-    else{
+    if((pas<0 && bordDroit==true) || (pas>0 && bordGauche==true)){
+       bordDroit = false;
+       bordGauche= false;
+
        xBarre_=xBarre_ + pas;
+    }
+    if(!bordDroit && !bordGauche) xBarre_=xBarre_ + pas;
+
+
+    if(pas<0){
+
     }
 
     glColor3f(1,1,1);
@@ -762,6 +786,28 @@ void GLWidget::paintGL()
     //renderText(30,100, score);
     gestionBoule(0.5);
 
+}
+void GLWidget::wheelEvent(QWheelEvent * event)
+{
+    if(event->delta() > 0)
+    {
+        if (longueurBarre_ < 30)
+        {
+        longueurBarre_ = longueurBarre_ + 1;
+        YBoule = YBoule -Ydir;
+        updateGL();
+        }
+    }
+    else
+    {
+        if (longueurBarre_ > 5)
+        {
+        longueurBarre_ = longueurBarre_ - 1;
+        YBoule = YBoule -Ydir;
+        updateGL();
+        }
+    }
+    event->accept();
 }
 
 

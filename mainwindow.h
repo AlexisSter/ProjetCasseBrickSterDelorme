@@ -34,7 +34,7 @@ private:
     cv::Mat matOriginal;
     cv::Mat matProcess;
 
-
+    int compt;
     QImage qimgOriginal;
     QImage qimgProcess;
 
