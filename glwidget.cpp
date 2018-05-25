@@ -71,7 +71,7 @@ GLWidget::GLWidget(QWidget * parent) : QGLWidget(parent)
     m_AnimationTimer.start();
     briqueAlive_ = true;
 
-    xBarre_ = 0.5;
+    xBarre_ = 0.0;
     yBarre_ = 0.05;
     longueurBarre_ = 10;
     hauteurBarre_ = 1;
@@ -99,7 +99,7 @@ void GLWidget::initializeGL()
     if(!place){
         a=a+1;
         if(a==1){
-            QString path ="C:/Users/Tanguy/Documents/Cours/Fise2/Bibliotheque_multimedia/ProjetCasseBrickSterDelorme";
+            QString path ="C:/Users/Alexis/Documents/ProjetCasseBrickSterDelorme/ProjetCasseBrickSterDelorme";
             QImage qim_Texture1 = QGLWidget::convertToGLFormat(QImage(path + "/texture10.png"));
             QImage qim_Texture2 = QGLWidget::convertToGLFormat(QImage(path + "/textureFond.jpg"));
             QImage qim_Texture3 = QGLWidget::convertToGLFormat(QImage(path + "/textureBoule.png"));
@@ -121,6 +121,8 @@ void GLWidget::initializeGL()
             m_textureWin=m_TextureID[5];
             imageWin=qim_TextureWin;
             placerBrique(2,-5,10);
+            //placerBrique(120,-45,18.30);
+
             //placerTSE();
             place=true;
 
@@ -128,7 +130,7 @@ void GLWidget::initializeGL()
     }
 }
 
-void GLWidget::placerBrique(int n,int x, int y){
+void GLWidget::placerBrique(int n,float x, float y){
 
 
     float xStart = x ;
@@ -149,7 +151,7 @@ void GLWidget::placerBrique(int n,int x, int y){
 
         }
 
-        Brique *briquei = new Brique(xStart+(i-t)*pas+(i-t)*largeur, yStart, -1, largeur,hauteur,1,m_texture,image);
+        Brique *briquei = new Brique(xStart+(i-t)*pas+(i-t)*largeur, yStart, -1, largeur,hauteur,5,m_texture,image);
         int hp = briquei->getHpBrique();
         if(hp == 0)
         {
@@ -197,7 +199,7 @@ void GLWidget::placerTSE(){
         }
         else if(i>=7 && i<=9){
             t=7;
-            qDebug()<<"yoyo";
+
             yStart=10;
             Brique *briquei = new Brique(30+xStart+(i-t)*pas+(i-t)*largeur, yStart, -1, largeur,hauteur,1,m_texture,image);
             briquei->setColor(0,255,0);
@@ -232,8 +234,8 @@ void GLWidget::placerTSE(){
         else if(i>13 && i<=14){
 
 
-                yStart = yStart - hauteur;
-                h=14;
+            yStart = yStart - hauteur;
+            h=14;
 
 
 
@@ -273,8 +275,8 @@ void GLWidget::placerTSE(){
         else if(i>20 && i<=21 ){
 
 
-                yStart = yStart - hauteur;
-                h=21;
+            yStart = yStart - hauteur;
+            h=21;
 
 
 
@@ -288,19 +290,19 @@ void GLWidget::placerTSE(){
         else if(i>21 && i<=23 ){
 
             if(i==22){
-            yStart = yStart - hauteur;
-            h=22;
+                yStart = yStart - hauteur;
+                h=22;
 
 
             }
 
-        Brique *briquei = new Brique(60+xStart+(i-h)*pas+(i-h)*largeur, yStart, -1, largeur,hauteur,1,m_texture,image);
-        briquei->setColor(255,0,0);
-        m_Brique.push_back(briquei);
+            Brique *briquei = new Brique(60+xStart+(i-h)*pas+(i-h)*largeur, yStart, -1, largeur,hauteur,1,m_texture,image);
+            briquei->setColor(255,0,0);
+            m_Brique.push_back(briquei);
 
 
-    }
-    else if(i>23 && i<=24 ){
+        }
+        else if(i>23 && i<=24 ){
 
 
             yStart = yStart - hauteur;
@@ -309,27 +311,27 @@ void GLWidget::placerTSE(){
 
 
 
-        Brique *briquei = new Brique(60+xStart+(i-h)*pas+(i-h)*largeur, yStart, -1, largeur,hauteur,1,m_texture,image);
-        briquei->setColor(255,0,0);
-        m_Brique.push_back(briquei);
-
-
-    }
-    else if(i>24 ){
-
-        if(i==25){
-            yStart = yStart - hauteur;
-            h=25;
+            Brique *briquei = new Brique(60+xStart+(i-h)*pas+(i-h)*largeur, yStart, -1, largeur,hauteur,1,m_texture,image);
+            briquei->setColor(255,0,0);
+            m_Brique.push_back(briquei);
 
 
         }
+        else if(i>24 ){
 
-        Brique *briquei = new Brique(60+xStart+(i-h)*pas+(i-h)*largeur, yStart, -1, largeur,hauteur,1,m_texture,image);
-        briquei->setColor(255,0,0);
-        m_Brique.push_back(briquei);
+            if(i==25){
+                yStart = yStart - hauteur;
+                h=25;
 
 
-    }
+            }
+
+            Brique *briquei = new Brique(60+xStart+(i-h)*pas+(i-h)*largeur, yStart, -1, largeur,hauteur,1,m_texture,image);
+            briquei->setColor(255,0,0);
+            m_Brique.push_back(briquei);
+
+
+        }
     }
 }
 void GLWidget::afficheFond(GLuint a, QImage b){
@@ -341,10 +343,10 @@ void GLWidget::afficheFond(GLuint a, QImage b){
     glBegin(GL_QUADS); // Primitive à afficher et début de la déclaration des vertices de cette primitive
     //face avant
 
-    glTexCoord2f(0, 0);glVertex3f(-50,-25,-5);  // Définition des coordonnées des sommets (en 2D, z=0) OK
-    glTexCoord2f(1, 0);glVertex3f(50,-25,-5);
-    glTexCoord2f(1, 1);glVertex3f(50,25,-5);
-    glTexCoord2f(0, 1);glVertex3f(-50,25,-5);
+    glTexCoord2f(0, 0);glVertex3f(-50,-25,-7);  // Définition des coordonnées des sommets (en 2D, z=0) OK
+    glTexCoord2f(1, 0);glVertex3f(50,-25,-7);
+    glTexCoord2f(1, 1);glVertex3f(50,25,-7);
+    glTexCoord2f(0, 1);glVertex3f(-50,25,-7);
 
     glEnd();
 
@@ -506,33 +508,33 @@ int GLWidget::gestionBoule(float larg_balle)
                         }
                     }
                 }
-            if((YBoule+larg_balle >= yBrique-hauteurBrique/2  && YBoule+larg_balle <=0.5+ yBrique-hauteurBrique/2 )|| ((YBoule-larg_balle <= yBrique+hauteurBrique/2  && YBoule-larg_balle >= -0.5+yBrique-hauteurBrique/2 )) && !occupied1 ) // Si la balle est au niveau de la case
-            {
-                // Teste au niveau de l'axe des abscisses
-
-                if((XBoule+larg_balle >= 0.1+xBrique-longueurBrique/2 && XBoule-larg_balle <=-0.1+ xBrique+longueurBrique/2) )
+                if((YBoule+larg_balle >= yBrique-hauteurBrique/2  && YBoule+larg_balle <=0.5+ yBrique-hauteurBrique/2 )|| ((YBoule-larg_balle <= yBrique+hauteurBrique/2  && YBoule-larg_balle >= -0.5+yBrique-hauteurBrique/2 )) && !occupied1 ) // Si la balle est au niveau de la case
                 {
-                    occupied2=true;
-                    i=i+1;
-                    if(i%2!=0){
-                        int hp = m_Brique[j]->getHpBrique();
-                        if(hp == 1)
-                        {
-                            m_Brique[j]->setHpBrique(0);
-                            m_Brique[j]->setColor(255,0,0);
-                            Ydir=Ydir * -1;
-                            joueur_.score();
-                        }
-                        else
-                        {
-                            m_Brique[j]->setTouched(true);
-                            m_Brique[j]->briqueTouched();
-                            Ydir=Ydir * -1;
-                            joueur_.score();
+                    // Teste au niveau de l'axe des abscisses
+
+                    if((XBoule+larg_balle >= 0.1+xBrique-longueurBrique/2 && XBoule-larg_balle <=-0.1+ xBrique+longueurBrique/2) )
+                    {
+                        occupied2=true;
+                        i=i+1;
+                        if(i%2!=0){
+                            int hp = m_Brique[j]->getHpBrique();
+                            if(hp == 1)
+                            {
+                                m_Brique[j]->setHpBrique(0);
+                                m_Brique[j]->setColor(255,0,0);
+                                Ydir=Ydir * -1;
+                                joueur_.score();
+                            }
+                            else
+                            {
+                                m_Brique[j]->setTouched(true);
+                                m_Brique[j]->briqueTouched();
+                                Ydir=Ydir * -1;
+                                joueur_.score();
+                            }
                         }
                     }
                 }
-            }
 
             }
         }
@@ -565,30 +567,30 @@ void GLWidget::etatVictoire(){
             updateGL();
         }
         else if(niveau<3){
-        start=false;
-        placerBrique(40,-34,16);
+            start=false;
+            placerBrique(40,-34,16);
 
-        playNextBoule();
-        updateGL();
+            playNextBoule();
+            updateGL();
         }
         else{
             niveau=3;
 
             joueur_.setNomJoueur(nomJoueur);
-             joueur_.checkTop();
-             un = joueur_.numero1();
-             deux = joueur_.numero2();
-             trois = joueur_.numero3();
-             quatre = joueur_.numero4();
-             cinq = joueur_.numero5();
-             six = joueur_.numero6();
-             sept = joueur_.numero7();
-             huit = joueur_.numero8();
-             neuf = joueur_.numero9();
-             dix = joueur_.numero10();
+            joueur_.checkTop();
+            un = joueur_.numero1();
+            deux = joueur_.numero2();
+            trois = joueur_.numero3();
+            quatre = joueur_.numero4();
+            cinq = joueur_.numero5();
+            six = joueur_.numero6();
+            sept = joueur_.numero7();
+            huit = joueur_.numero8();
+            neuf = joueur_.numero9();
+            dix = joueur_.numero10();
 
             start=false;
-            qDebug()<<"you won";
+
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
@@ -600,6 +602,7 @@ void GLWidget::etatVictoire(){
             glLoadIdentity();
 
             gluLookAt(0,0,5,0,0,0,0,1,0);
+            //gluLookAt(10,2,5,0,0,0,0,1,0);
             glColor3f(1,1,1);
             afficheFond(m_textureWin,imageWin);
         }
@@ -637,6 +640,7 @@ void GLWidget::etatPartie()
             glLoadIdentity();
 
             gluLookAt(0,0,5,0,0,0,0,1,0);
+            //gluLookAt(10,2,5,0,0,0,0,1,0);
             glColor3f(1,1,1);
             afficheFond(m_textureFin,imageFin);
 
@@ -654,17 +658,17 @@ void GLWidget::etatPartie()
             start = false;
             pause = true;
             joueur_.setNomJoueur(nomJoueur);
-             joueur_.checkTop();
-             un = joueur_.numero1();
-             deux = joueur_.numero2();
-             trois = joueur_.numero3();
-             quatre = joueur_.numero4();
-             cinq = joueur_.numero5();
-             six = joueur_.numero6();
-             sept = joueur_.numero7();
-             huit = joueur_.numero8();
-             neuf = joueur_.numero9();
-             dix = joueur_.numero10();
+            joueur_.checkTop();
+            un = joueur_.numero1();
+            deux = joueur_.numero2();
+            trois = joueur_.numero3();
+            quatre = joueur_.numero4();
+            cinq = joueur_.numero5();
+            six = joueur_.numero6();
+            sept = joueur_.numero7();
+            huit = joueur_.numero8();
+            neuf = joueur_.numero9();
+            dix = joueur_.numero10();
 
 
 
@@ -676,8 +680,8 @@ void GLWidget::etatPartie()
             //int ret = msgBox.exec();
             //switch (ret) {
             //case QMessageBox::Ok:
-                // Save was clicked
-                //close();
+            // Save was clicked
+            //close();
             //}
             /*QList<int> score = joueur_.displayTop();
             for(int i=0; i<score.size();i++)
@@ -715,11 +719,15 @@ void GLWidget::resizeGL(int width, int height)
 }
 
 void GLWidget::setXbarre(int x){
-    if(x>1) pas = 1;
-    else if(x<-1) pas=-1;
-    else if ((x>0.1 && x<=1) ||(x<-0.1  && x>=-1)) pas=x;
-    else pas=0;
+    if(start){
 
+        if(x>1) pas = 1;
+        else if(x<-1) pas=-1;
+        else if ((x>0.1 && x<=1) ||(x<-0.1  && x>=-1)) pas=x;
+        else if(x==0)pas=0;
+
+
+    }
 
 
 
@@ -739,15 +747,15 @@ void GLWidget::paintGL()
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-
     gluLookAt(0,0,5,0,0,0,0,1,0);
+    //gluLookAt(10,2,5,0,0,0,0,1,0);
 
     for ( int i = 0; i<m_Brique.size();i++){
         m_Brique[i]->Display(m_TimeElapsed);
     }
 
     if((xBarre_ -4 )<=-48){
-         xBarre_=-44;
+        xBarre_=-44;
 
     }
     if((xBarre_+4) >=49 ){
@@ -755,12 +763,12 @@ void GLWidget::paintGL()
         bordDroit=true;
 
 
-     }
+    }
     if((pas<0 && bordDroit==true) || (pas>0 && bordGauche==true)){
-       bordDroit = false;
-       bordGauche= false;
+        bordDroit = false;
+        bordGauche= false;
 
-       xBarre_=xBarre_ + pas;
+        xBarre_=xBarre_ + pas;
     }
     if(!bordDroit && !bordGauche) xBarre_=xBarre_ + pas;
 
@@ -782,27 +790,30 @@ void GLWidget::paintGL()
 }
 void GLWidget::wheelEvent(QWheelEvent * event)
 {
-    if(event->delta() > 0)
-    {
-        if (longueurBarre_ < 30)
+    if(!start){
+        if(event->delta() > 0)
         {
-        longueurBarre_ = longueurBarre_ + 1;
-        YBoule = YBoule -Ydir;
-        updateGL();
+            if (longueurBarre_ < 30)
+            {
+                xBarre_ = 0.0;
+                longueurBarre_ = longueurBarre_ + 1;
+                YBoule = YBoule -Ydir;
+                updateGL();
+            }
         }
-    }
-    else
-    {
-        if (longueurBarre_ > 5)
+        else
         {
-        longueurBarre_ = longueurBarre_ - 1;
-        YBoule = YBoule -Ydir;
-        updateGL();
+            if (longueurBarre_ > 5)
+            {
+                xBarre_ = 0.0;
+                longueurBarre_ = longueurBarre_ - 1;
+                YBoule = YBoule -Ydir;
+                updateGL();
+            }
         }
+        event->accept();
     }
-    event->accept();
 }
-
 
 // Fonction de gestion d'interactions clavier
 void GLWidget::keyPressEvent(QKeyEvent * event)

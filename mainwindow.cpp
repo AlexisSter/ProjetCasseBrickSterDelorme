@@ -17,22 +17,22 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->niveau->setAlignment(Qt::AlignHCenter);
     ui->boule->setAlignment(Qt::AlignHCenter);
 
-    capwebcam.open(0);
+    //capwebcam.open(0);
 
 
     if(capwebcam.isOpened() == false){
 
-        return;
+        //return;
 
 
 
     }
     tmrTimer = new QTimer(this);
     timerScore  = new QTimer(this);
-    connect(tmrTimer,SIGNAL(timeout()),this,SLOT(processFrameAndUpdateGUI()));
+    //connect(tmrTimer,SIGNAL(timeout()),this,SLOT(processFrameAndUpdateGUI()));
     connect(tmrTimer,SIGNAL(timeout()),this,SLOT(updateScore()));
-    timerScore->start(1);
-    tmrTimer->start(100);
+    timerScore->start(100);
+    tmrTimer->start(150);
 
     frameWidth=320;
     frameHeight=240;
@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
     subImageHeight=100;
     templateWidth=50;
     templateHeight=50;
-    compt = 0;
+
 }
 
 MainWindow::~MainWindow()
@@ -48,9 +48,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 void MainWindow::processFrameAndUpdateGUI(){
-    compt++;
-    //while(compt < 10){
-        //if(compt==12)compt=0;
+
 
     Rect workingRect(120,65,subImageWidth,subImageHeight);
     Rect templateRect((workingRect.width-templateWidth)/2,(workingRect.height-templateHeight)/2,templateWidth,templateHeight);
@@ -98,22 +96,22 @@ void MainWindow::processFrameAndUpdateGUI(){
         if(vect.x>5 && etat ){
             //ui->label->setText("droite");
 
-            ui->widget->setXbarre((vect.x)/6);
+            ui->widget->setXbarre((vect.x)/7);
         }
         if(vect.x<-5 && etat){
 
              //ui->label->setText("gauche");
 
-             ui->widget->setXbarre((vect.x)/6);
+             ui->widget->setXbarre((vect.x)/7);
         }
-        if(vect.y>15){
-            qDebug()<<"coucou toi";
+        if(vect.y>15|| vect.y<-15){
+
             ui->widget->setXbarre(0);
             etat=false;
         }
         if(vect.x >15 || vect.x<-15){
             etat=true;
-            ui->widget->setXbarre((vect.x)/6);
+            ui->widget->setXbarre((vect.x)/7);
         }
 
         // Display frame2

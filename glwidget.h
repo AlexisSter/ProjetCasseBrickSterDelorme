@@ -55,10 +55,12 @@ protected:
     //Affiche le palet
     void affiche_barre();
     //Niveau 1 et 2 du jeu
-    void placerBrique(int n,int x,int y);
+    void placerBrique(int n,float x,float y);
     //Niveau 3 (TSE)
     void placerTSE();
+    //Affichage de la boule
     void drawBoule(float radius);
+    //Gère le déplacement (vitesse, direction) en fonction des collisions sur les murs, briques et le palets
     int gestionBoule( float larg_balle);
     setBoule(float x, float y){XBoule = x; YBoule = y;}
     setBarre(float x, float y, float longueur, float hauteur){xBarre_ = x, yBarre_ = y, longueurBarre_ = longueur, hauteurBarre_ = hauteur;}
@@ -70,8 +72,7 @@ protected:
 
 
 private:
-    // Quelques variables a definir
-    // changer de primitive
+    //Déclaration d'un joueur
     Joueur joueur_;
     string nomJoueur;
     //Appel de la classe brique, c'est un pointeur
